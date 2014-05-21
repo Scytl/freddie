@@ -9,7 +9,7 @@ var connect = require('connect'),
     http = require('http'),
     getPort = require('./getport');
  
-var dir = process.argv[2] || process.env.PWD;
+var dir = process.argv[2] || process.cwd();
 
 var rewriteToGet = function (req, res, next) {
     req.method = 'GET';
