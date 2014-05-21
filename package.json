@@ -1,0 +1,22 @@
+{
+  "name": "fess",
+  "version": "0.0.1",
+  "description": "frontend static server",
+  "main": "fess.js",
+  "bin": {
+    "fess": "./fess.js"
+  },
+  "dependencies": {
+    "connect": "latest",
+    "http-proxy": "latest"
+  },
+  "keywords": [
+    "http",
+    "https",
+    "server",
+    "static",
+    "proxy"
+  ],
+  "author": "Pau Fracés <pfraces@gmail.com>",
+  "license": "MIT"
+}
