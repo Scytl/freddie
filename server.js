@@ -66,26 +66,25 @@ var connect = require('connect'),
     getPort = require('./getport');
 
 var prj = readJSON(path.join(__dirname, 'package.json')),
-    cwd = process.cwd();
- 
+    cwd = process.cwd(),
+    config = readJSON(path.join(cwd, '.' + prj.name + '.json'), { fallback: {} }),
+    root = process.argv[2] || config.root || cwd,
+    app = connect();
+
+// proxy the requests as defined in configuration
+if (config.proxies) {
+    each(config.proxies, function (target, context) {
+        app.use(context, proxy(target, context));
+    });
+}
+
+// if not intercepted by proxy, serve static content
+app.use(mocks);
+app.use(connect.static(root));
+
 getPort(function (err, port) {
     if (err) { throw err; }
-  
-    var config = readJSON(path.join(cwd, '.' + prj.name + '.json'), { fallback: {} }),
-        root = process.argv[2] || config.root || cwd,
-        app = connect();
     
-    // proxy the requests as defined in configuration
-    if (config.proxies) {
-        each(config.proxies, function (target, context) {
-            app.use(context, proxy(target, context));
-        });
-    }
-    
-    // if not intercepted by proxy, serve static content
-    app.use(mocks);
-    app.use(connect.static(root));
-
     http.createServer(app).listen(port);
     console.log('listening to port ' + port);
 });
