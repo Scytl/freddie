@@ -1,10 +1,10 @@
 {
   "name": "fess",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "frontend static server",
   "main": "fess.js",
   "bin": {
-    "fess": "./CLI.js"
+    "fess": "./cli.js"
   },
   "dependencies": {
     "connect": "latest",
