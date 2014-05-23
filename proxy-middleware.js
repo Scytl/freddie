@@ -3,8 +3,11 @@ var httpProxy = require('http-proxy'),
 
 var proxyMiddleware = function (target, context) {
     var proxy = httpProxy.createProxyServer({});
+    context = context || '';
 
     /**
+     * Allow target definitions with a path part
+     *
      * Having a target with a path part: 'host:1234/path/part'
      * and a context: '/context'
      *
@@ -14,25 +17,35 @@ var proxyMiddleware = function (target, context) {
      * target: 'host:1234'
      * context: '/path/part/context'
      */
-    context = context || '';
+
+    /**
+     * Avoid '//' in the context of any requests
+     *
+     * url.parse returns '/' as path when no path is defined
+     * and the context definition must start with '/'
+     *
+     * To avoid '//context' by concatenating path and context,
+     * '/' is removed from path when no path is defined
+     */
 
     var targetParams = url.parse(target)
         proxyTarget = url.format({
             protocol: targetParams.protocol,
             host: targetParams.host
         }),
-        proxyContext = targetParams.pathname + context;
+        path = targetParams.pathname === '/' ? '' : targetParams.pathname,
+        proxyContext = path + context;
 
     
     proxy.on('error', function (err, req, res) {
-        var msg = err.code + ': ' + target + req.url;
+        var msg = err.toString() + ': ' + target + req.url;
         res.writeHead(500, { 'Content-Type': 'text/plain' });
         res.end(msg);
         console.log('[PROXY] ' + msg);
     });
     
     proxy.on('proxyRes', function (ev, req, res) {
-        var request = req.url.replace(targetParams.pathname, ''),
+        var request = req.url.replace(path, ''),
             msg = request + ' -> ' + target + req.url;
 
         console.log('[PROXY] ' + msg);
