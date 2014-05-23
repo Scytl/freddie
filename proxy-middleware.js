@@ -1,7 +1,28 @@
-var httpProxy = require('http-proxy');
+var httpProxy = require('http-proxy'),
+    url = require('url');
 
 var proxyMiddleware = function (target, context) {
     var proxy = httpProxy.createProxyServer({});
+
+    /**
+     * Having a target with a path part: 'host:1234/path/part'
+     * and a context: '/context'
+     *
+     * The '/path/part' must me removed from the target and added to the
+     * context as a prefix:
+     *
+     * target: 'host:1234'
+     * context: '/path/part/context'
+     */
+    context = context || '';
+
+    var targetParams = url.parse(target)
+        proxyTarget = url.format({
+            protocol: targetParams.protocol,
+            host: targetParams.host
+        }),
+        proxyContext = targetParams.pathname + context;
+
     
     proxy.on('error', function (err, req, res) {
         var msg = err.code + ': ' + target + req.url;
@@ -11,13 +32,15 @@ var proxyMiddleware = function (target, context) {
     });
     
     proxy.on('proxyRes', function (ev, req, res) {
-        var msg = req.url + ' -> ' + target + req.url;
+        var request = req.url.replace(targetParams.pathname, ''),
+            msg = request + ' -> ' + target + req.url;
+
         console.log('[PROXY] ' + msg);
     });
     
     return function (req, res) {
-        if (context) { req.url = context + req.url; }
-        proxy.web(req, res, { target: target });
+        req.url = proxyContext + req.url;
+        proxy.web(req, res, { target: proxyTarget });
     };
 };
 
