@@ -2,40 +2,54 @@ var httpProxy = require('http-proxy'),
     url = require('url');
 
 var proxyMiddleware = function (target, context) {
-    var proxy = httpProxy.createProxyServer({});
     context = context || '';
 
     /**
      * Allow target definitions with a path part
+     * -----------------------------------------
      *
-     * Having a target with a path part: 'host:1234/path/part'
-     * and a context: '/context'
+     * Having a target with a path part `host:1234/path/part`
+     * and a context `/context`
      *
-     * The '/path/part' must me removed from the target and added to the
+     * The `/path/part` must be removed from the target and added to the
      * context as a prefix:
      *
-     * target: 'host:1234'
-     * context: '/path/part/context'
-     */
-
-    /**
-     * Avoid '//' in the context of any requests
-     *
-     * url.parse returns '/' as path when no path is defined
-     * and the context definition must start with '/'
-     *
-     * To avoid '//context' by concatenating path and context,
-     * '/' is removed from path when no path is defined
+     *     target: 'host:1234'
+     *     context: '/path/part/context'
      */
 
     var targetParams = url.parse(target)
         proxyTarget = url.format({
             protocol: targetParams.protocol,
             host: targetParams.host
-        }),
-        path = targetParams.pathname === '/' ? '' : targetParams.pathname,
+        });
+
+    /**
+     * Avoid '//' in the context of any requests
+     * -----------------------------------------
+     *
+     * `url.parse` returns `/` as path when no path is defined
+     * and the context defined in config must start with `/`
+     *
+     * To avoid `//context` by concatenating path and context,
+     * `/` is removed from path when no path is defined
+     */
+
+    var path = targetParams.pathname === '/' ? '' : targetParams.pathname,
         proxyContext = path + context;
 
+    /**
+     * Create the proxy
+     * ----------------
+     *
+     * Use `secure: true` to access https targets without cert
+     */
+
+    var proxy = httpProxy.createProxyServer({
+      target: proxyTarget,
+      secure: false
+    });
+    
     
     proxy.on('error', function (err, req, res) {
         var msg = err.toString() + ': ' + target + req.url;
@@ -53,7 +67,7 @@ var proxyMiddleware = function (target, context) {
     
     return function (req, res) {
         req.url = proxyContext + req.url;
-        proxy.web(req, res, { target: proxyTarget });
+        proxy.web(req, res);
     };
 };
 
