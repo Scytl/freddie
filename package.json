@@ -1,6 +1,6 @@
 {
   "name": "fess",
-  "version": "0.0.7",
+  "version": "0.1.0",
   "description": "frontend static server",
   "main": "fess.js",
   "bin": {
@@ -8,13 +8,12 @@
   },
   "dependencies": {
     "connect": "latest",
-    "http-proxy": "latest"
+    "http-proxy": "latest",
+    "rc": "latest"
   },
   "keywords": [
-    "http",
-    "https",
-    "server",
     "static",
+    "mock",
     "proxy"
   ],
   "author": "Pau Fracés <pfraces@gmail.com>",

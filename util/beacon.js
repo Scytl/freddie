@@ -4,18 +4,17 @@
 
 var net = require('net');
 
-var basePort = 3000,
-    server = net.createServer(function () {});
+var server = net.createServer(function () {});
 
 /**
- * nextPort()
+ * nextPort(basePort)
  *
  * Gets the next port in sequence from the specified `basePort`
  */
 var nextPort = (function () {
   var port;
 
-  var getNextPort = function () {
+  var getNextPort = function (basePort) {
     if (!port) {
       port = basePort;
       return port;
@@ -29,12 +28,12 @@ var nextPort = (function () {
 })();
 
 /**
- * getPort()
+ * beacon()
  *
  * Responds with a unbound port on the current machine.
  */
-var getPort = function (callback) {
-  var port = nextPort();
+var beacon = function (basePort, callback) {
+  var port = nextPort(basePort);
 
   function onListen () {
     server.removeListener('error', onError);
@@ -49,7 +48,7 @@ var getPort = function (callback) {
       return callback(err);
     }
 
-    getPort(callback);
+    beacon(basePort, callback);
   }
 
   server.once('error', onError);
@@ -57,4 +56,4 @@ var getPort = function (callback) {
   server.listen(port);
 };
 
-module.exports = getPort;
+module.exports = beacon;
