@@ -13,7 +13,7 @@ Install
 Usage
 -----
 
-Launch a basic static server
+Launch a static server
 
 1.  Go to the root directory of the site you want to serve (a directory with
     an `index.html`)
@@ -22,54 +22,36 @@ Launch a basic static server
     cd /path/to/my-prj
     ```
 
-2.  From the command line, launch the fess CLI
+2.  From the command line, launch the **fess** CLI
 
     ```sh
     fess
     ```
 
-Alternatively, you can launch the server from any directory passing the root
-path as the first param
-
-```sh
-fess /path/to/my-prj
-```
-
-The root directory can be passed as absolute path or relative to the current
-directory
-
-**DEPRECATION WARNING:** As soon as the CLI params get implemented, passing a
-root directory by param will be done through the `--root` flag
+Alternatively, you can launch the server from any directory passing a root
+path
 
 ```sh
 fess --root /path/to/my-prj
 ```
 
+The root directory can be passed as absolute path or relative to the current
+directory
+
 Config file
 -----------
 
 **fess** looks inside the current directory (where the CLI is called from)
-searching for a `.fess.json` config file.
+searching for a `.fessrc` JSON config file.
 
-If the config file is found it is loaded, otherwise **fess** launches a simple
-static server
+If there is no config file **fess** launches the default static server
 
 ### root
-
-In the config file, you can configure your root directory, so having a config
-file like the following:
 
 ```json
 {
     "root": "build"
 }
-```
-
-and calling **fess** from the same directory as the config file, causes the same
-behavior as calling directly
-
-```sh
-fess build
 ```
 
 The root is defined following this priority order:
@@ -78,8 +60,8 @@ The root is defined following this priority order:
 2.  config's root property
 3.  current directory
 
-so, if both, a config file is defined and a CLI param is passed, the CLI param
-gets priority over the config defined root
+So, if a config file is defined and a CLI param is passed, the CLI param gets
+priority over the config defined root
 
 ### proxy
 
@@ -103,12 +85,25 @@ A context can be specified in the target server:
 ```json
 {
     "proxy": {
-        "/api": "https://backend.com/foo"
+        "/api": "https://securebackend.com/foo"
     }
 }
 ```
 
 redirecting all `/api/...` requests to `http://backend.com/foo/api/...`
 
-Multiple proxies can be defined by adding multiple rules to the **proxy**
+Multiple proxies can be defined by adding multiple rules to the `proxy`
 property.
+
+### port
+
+```json
+{
+    "port": 3000
+}
+```
+
+**fess** looks for a free port to listen. If the specified port is busy, the
+port number is incremented and tried again until a free port is reached.
+
+If no port is specified, the port search starts with the default `3000`
