@@ -22,7 +22,7 @@ Launch a static server
     cd /path/to/my-prj
     ```
 
-2.  From the command line, launch the **fess** CLI
+2.  From the command line, launch the CLI
 
     ```sh
     fess
@@ -44,7 +44,7 @@ Config file
 **fess** looks inside the current directory (where the CLI is called from)
 searching for a `.fessrc` JSON config file.
 
-If there is no config file **fess** launches the default static server
+If there is no config file, the default static server is launched
 
 ### root
 
@@ -78,8 +78,6 @@ A proxy table can be defined as follows:
 This config causes all requests to `/api/...` to be redirected to
 `http://backend.com/api/...`
 
-Either **http** and **https** protocols are supported.
-
 A context can be specified in the target server:
 
 ```json
@@ -90,7 +88,7 @@ A context can be specified in the target server:
 }
 ```
 
-redirecting all `/api/...` requests to `http://backend.com/foo/api/...`
+redirecting all `/api/...` requests to `https://securebackend.com/foo/api/...`
 
 Multiple proxies can be defined by adding multiple rules to the `proxy`
 property.
