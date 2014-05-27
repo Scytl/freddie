@@ -52,7 +52,7 @@ var proxyMiddleware = function (target, context) {
   
   
   proxy.on('error', function (err, req, res) {
-    var msg = err.toString() + ': ' + target + req.url;
+    var msg = err.toString() + ': ' + proxyTarget + req.url;
     res.writeHead(500, { 'Content-Type': 'text/plain' });
     res.end(msg);
     console.log('[PROXY] ' + msg);
@@ -60,7 +60,7 @@ var proxyMiddleware = function (target, context) {
   
   proxy.on('proxyRes', function (ev, req, res) {
     var request = req.url.replace(path, ''),
-        msg = request + ' -> ' + target + req.url;
+        msg = request + ' -> ' + proxyTarget + req.url;
 
     console.log('[PROXY] ' + msg);
   });
