@@ -1,4 +1,5 @@
 var connect = require('connect'),
+    serveStatic = require('serve-static'),
     http = require('http');
     
 var each = require('./util/each'),
@@ -18,7 +19,7 @@ var fess = function (config) {
  
   // if not intercepted by proxy, serve static content
   app.use(mocks);
-  app.use(connect.static(config.root));
+  app.use(serveStatic(config.root));
  
   beacon(config.port, function (err, port) {
     if (err) { throw err; }
