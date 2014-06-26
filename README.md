@@ -105,3 +105,8 @@ property.
 port number is incremented and tried again until a free port is reached.
 
 If no port is specified, the port search starts with the default `3000`
+
+License
+-------
+
+The MIT License (MIT)
