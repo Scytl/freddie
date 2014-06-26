@@ -1,6 +1,6 @@
 {
   "name": "fess",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "frontend static server",
   "main": "fess.js",
   "bin": {
@@ -10,6 +10,7 @@
     "connect": "latest",
     "serve-static": "latest",
     "http-proxy": "latest",
+    "cookie": "latest",
     "rc": "latest"
   },
   "keywords": [

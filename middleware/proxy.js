@@ -1,6 +1,48 @@
 var httpProxy = require('http-proxy'),
     url = require('url');
 
+/**
+ * cookieRewrite(cookie, fn)
+ * -------------------------
+ *
+ * `require('cookie').serialize` needs the cookie key and value to be
+ * specified in its params:
+ *
+ *     cookie.serialize(key, value, options)
+ *
+ * That means we can't pass directly the object returned by
+ * `require('cookie').parse`
+ *
+ * The RFC6265 specifies that the Set-Cookie header must contain just
+ * one cookie pair (key=value) at the beginning followed by the cookie attributes
+ */
+
+var cookieRewrite = function (cookie, fn) {
+  var cookieModule = require('cookie');
+
+  var parse = cookieModule.parse,
+      serialize = cookieModule.serialize;
+
+  var tokens = cookie.split(/; */),
+      pair = parse(tokens.shift()),
+      name = Object.keys(pair)[0],
+      value = pair[name],
+      attrs = parse(tokens.join('; '));
+
+  var parsedCookie = fn({
+    name: name,
+    value: value,
+    maxage: attrs['Max-Age'],
+    expires: attrs['Expires'],
+    path: attrs['Path'],
+    domain: attrs['Domain'],
+    secure: attrs['Secure'],
+    httpOnly: attrs['HttpOnly']
+  });
+
+  return serialize(parsedCookie.name, parsedCookie.value, parsedCookie);
+};
+
 var proxyMiddleware = function (target, context) {
   context = context || '';
 
@@ -11,6 +53,8 @@ var proxyMiddleware = function (target, context) {
    * Having a target with a path part `host:1234/path/part`
    * and a context `/context`
    *
+   *     { '/context': 'host:1234/path/part' }
+   *
    * The `/path/part` must be removed from the target and added to the
    * context as a prefix:
    *
@@ -18,11 +62,12 @@ var proxyMiddleware = function (target, context) {
    *     context: '/path/part/context'
    */
 
-  var targetParams = url.parse(target),
-      proxyTarget = url.format({
-        protocol: targetParams.protocol,
-        host: targetParams.host
-      });
+  var targetParams = url.parse(target);
+
+  var proxyTarget = url.format({
+    protocol: targetParams.protocol,
+    host: targetParams.host
+  });
 
   /**
    * Avoid '//' in the context of any requests
@@ -39,10 +84,10 @@ var proxyMiddleware = function (target, context) {
       proxyContext = path + context;
 
   /**
-   * Create the proxy
-   * ----------------
+   * Proxy to HTTPS without using certs
+   * ----------------------------------
    *
-   * Use `secure: true` to access https targets without cert
+   * Use `secure: false` to access HTTPS targets without cert
    */
 
   var proxy = httpProxy.createProxyServer({
@@ -58,11 +103,25 @@ var proxyMiddleware = function (target, context) {
     console.log('[PROXY] ' + msg);
   });
   
-  proxy.on('proxyRes', function (ev, req, res) {
+  proxy.on('proxyRes', function (proxyRes, req, res) {
+
+    /* log request */
+
     var request = req.url.replace(path, ''),
         msg = request + ' -> ' + proxyTarget + req.url;
 
     console.log('[PROXY] ' + msg);
+
+    /* replace Set-Cookie's Path attribute */
+
+    if (!proxyRes.headers['set-cookie']) { return; }
+
+    proxyRes.headers['set-cookie'] = proxyRes.headers['set-cookie'].map(function (cookie) {
+      return cookieRewrite(cookie, function (cookie) {
+        cookie.path = cookie.path.replace(path, '');
+        return cookie;
+      });
+    });
   });
   
   return function (req, res) {
