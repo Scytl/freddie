@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 
-var rc = require('rc');
+var minimist = require('minimist'),
+    rc = require('rc');
 
-var readJSON = require('./util/readJSON'),
+var readFile = require('./util/readFile'),
+    readJSON = require('./util/readJSON'),
     fess = require('./fess');
 
 var defaults = {
@@ -11,11 +13,18 @@ var defaults = {
 };
 
 var prj = readJSON(__dirname, 'package.json'),
-    config = rc(prj.name, defaults);
+    argv = minimist(process.argv.slice(2));
 
-if (config.version) {
+if (argv.version) {
   console.log(prj.version);
   process.exit();
 }
+
+if (argv.help) {
+  console.log(readFile(__dirname, 'README.md'));
+  process.exit();
+}
+
+var config = rc(prj.name, defaults, argv);
 
 fess(config);
