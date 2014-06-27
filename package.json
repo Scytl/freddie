@@ -12,7 +12,7 @@
     "http-proxy": "latest",
     "cookie": "latest",
     "minimist": "latest",
-    "rc": "latest"
+    "strip-json-comments": "latest"
   },
   "keywords": [
     "static",

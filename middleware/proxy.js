@@ -100,7 +100,7 @@ var proxyMiddleware = function (target, context) {
     var msg = err.toString() + ': ' + proxyTarget + req.url;
     res.writeHead(500, { 'Content-Type': 'text/plain' });
     res.end(msg);
-    console.log('[PROXY] ' + msg);
+    console.log('[proxy] ' + msg);
   });
   
   proxy.on('proxyRes', function (proxyRes, req, res) {
@@ -110,7 +110,7 @@ var proxyMiddleware = function (target, context) {
     var request = req.url.replace(path, ''),
         msg = request + ' -> ' + proxyTarget + req.url;
 
-    console.log('[PROXY] ' + msg);
+    console.log('[proxy] ' + msg);
 
     /* replace Set-Cookie's Path attribute */
 
