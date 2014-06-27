@@ -30,7 +30,7 @@ if (!config) {
 }
 
 if (!isArray(config)) {
-  config = [ config ]
+  config = [ config ];
 };
 
 var defaults = {
