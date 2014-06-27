@@ -3,7 +3,9 @@ var fs = require('fs'),
 
 var readFile = function () {
   var file = path.resolve.apply(null, arguments);
-  return fs.readFileSync(file, { encoding: 'utf8' });
+
+  try { return fs.readFileSync(file, { encoding: 'utf8' }); }
+  catch (e) { return; }
 };
 
 module.exports = readFile;

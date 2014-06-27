@@ -1,6 +1,6 @@
 {
   "name": "fess",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "frontend static server",
   "main": "fess.js",
   "bin": {

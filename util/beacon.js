@@ -4,8 +4,6 @@
 
 var net = require('net');
 
-var server = net.createServer(function () {});
-
 /**
  * nextPort(basePort)
  *
@@ -33,7 +31,8 @@ var nextPort = (function () {
  * Responds with a unbound port on the current machine.
  */
 var beacon = function (basePort, callback) {
-  var port = nextPort(basePort);
+  var server = net.createServer(function () {}),
+      port = nextPort(basePort);
 
   function onListen () {
     server.removeListener('error', onError);

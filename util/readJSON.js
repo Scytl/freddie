@@ -2,7 +2,9 @@ var readFile = require('./readFile'),
     stripComments = require('strip-json-comments');
 
 var readJSON = function () {
-  return JSON.parse(stripComments(readFile.apply(null, arguments)));
+  var content = readFile.apply(null, arguments);
+  if (!content) { return; }
+  return JSON.parse(stripComments(content));
 };
 
 module.exports = readJSON;
