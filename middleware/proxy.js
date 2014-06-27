@@ -114,9 +114,10 @@ var proxyMiddleware = function (target, context) {
 
     /* replace Set-Cookie's Path attribute */
 
-    if (!proxyRes.headers['set-cookie']) { return; }
+    var headers = proxyRes.headers;
+    if (!headers['set-cookie']) { return; }
 
-    proxyRes.headers['set-cookie'] = proxyRes.headers['set-cookie'].map(function (cookie) {
+    headers['set-cookie'] = headers['set-cookie'].map(function (cookie) {
       return cookieRewrite(cookie, function (cookie) {
         cookie.path = cookie.path.replace(path, '');
         return cookie;

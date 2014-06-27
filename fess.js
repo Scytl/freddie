@@ -5,7 +5,7 @@ var connect = require('connect'),
 var each = require('./util/each'),
     beacon = require('./util/beacon'),
     proxy = require('./middleware/proxy'),
-    mocks = require('./middleware/mocks');
+    mock = require('./middleware/mock');
 
 var fess = function (config) {
   var app = connect();
@@ -17,8 +17,14 @@ var fess = function (config) {
     });
   }
  
-  // if not intercepted by proxy, serve static content
-  app.use(mocks);
+  // if not intercepted by proxy, serve mock content
+  if (config.mock) {
+    each(config.mock, function (root, context) {
+      app.use(context, mock(root));
+    });
+  }
+
+  // if not intercepted by mock, serve static content
   app.use(serveStatic(config.root));
  
   beacon(config.port, function (err, port) {
