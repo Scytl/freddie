@@ -1,5 +1,5 @@
 var httpProxy = require('http-proxy'),
-    url = require('url');
+    url       = require('url');
 
 /**
  * cookieRewrite(cookie, fn)

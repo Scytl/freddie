@@ -1,11 +1,10 @@
-var connect = require('connect'),
+var http        = require('http'),
+    connect     = require('connect'),
     serveStatic = require('serve-static'),
-    http = require('http');
-    
-var each = require('./util/each'),
-    beacon = require('./util/beacon'),
-    proxy = require('./middleware/proxy'),
-    mock = require('./middleware/mock');
+    each        = require('./util/each'),
+    beacon      = require('./util/beacon'),
+    proxy       = require('./middleware/proxy'),
+    mock        = require('./middleware/mock');
 
 var fess = function (config) {
   var app = connect();

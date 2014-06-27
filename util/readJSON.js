@@ -1,4 +1,4 @@
-var readFile = require('./readFile'),
+var readFile      = require('./readFile'),
     stripComments = require('strip-json-comments');
 
 var readJSON = function () {

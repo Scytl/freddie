@@ -1,7 +1,7 @@
-var fs = require('fs'),
-    path = require('path'),
-    url = require('url'),
-    dummyJSON = require('dummy-json'),
+var fs            = require('fs'),
+    path          = require('path'),
+    url           = require('url'),
+    dummyJSON     = require('dummy-json'),
     stripComments = require('strip-json-comments');
 
 var ct = function (type) {

@@ -1,4 +1,4 @@
-var fs = require('fs'),
+var fs   = require('fs'),
     path = require('path');
 
 var readFile = function () {
