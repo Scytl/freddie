@@ -22,14 +22,16 @@ if (argv.help) {
 }
 
 var configFile = argv.config || ('.' + pkg.name + 'rc'),
-    config = readJSON(configFile);
+    config = argv.noconf ? null : readJSON(configFile);
 
 if (!config) {
-  console.log('no config found, loading defaults');
-  config = {};
+  console.log('loading defaults');
+  config = argv;
 }
 
-if (!isArray(config)) { config = [ config ] };
+if (!isArray(config)) {
+  config = [ config ]
+};
 
 var defaults = {
   root: process.cwd(),
