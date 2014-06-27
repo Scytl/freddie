@@ -21,19 +21,23 @@ var HTTP = {
 
 var mockMiddleware = function (root) {
   return function (req, res) {
-    var parsedUrl = url.parse(req.url);
-    delete parsedUrl.search;
-
-    var cleanUrl = url.format(parsedUrl),
-        filePath = path.resolve(root, '.' + cleanUrl + '.json');
+    var pathname = url.parse(req.url).pathname,
+        filePath = path.resolve(root, '.' + pathname + '.json');
 
     fs.readFile(filePath, { encoding: 'utf8' }, function (err, data) {
       var content = '';
 
-      if (err && err.code === 'ENOENT') {
-        res.writeHead(HTTP.ERR_NOT_FOUND, CT.PLAIN_TEXT);
-        res.end();
-        console.log('[mock] err not found', filePath);
+      if (err) {
+        if (err.code === 'ENOENT') {
+            res.writeHead(HTTP.ERR_NOT_FOUND, CT.PLAIN_TEXT);
+            res.end();
+            console.log('[mock] err not found', filePath);
+            return;
+        }
+
+        res.writeHead(HTTP.ERR_UNKNOWN, CT.PLAIN_TEXT);
+        res.end(err.toString());
+        console.log('[mock] err unknown', err.toString());
         return;
       }
 
