@@ -18,8 +18,15 @@
   "keywords": [
     "static",
     "mock",
-    "proxy"
+    "proxy",
+    "server",
+    "http",
+    "https"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pfraces/fess.git"
+  },
   "author": "Pau Fracés <pfraces@gmail.com>",
   "license": "MIT"
 }

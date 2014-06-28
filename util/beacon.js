@@ -1,54 +1,25 @@
-/**
- * From https://github.com/indexzero/node-portfinder
- */
+/* from https://github.com/indexzero/node-portfinder */
 
 var net = require('net');
 
-/**
- * nextPort(basePort)
- *
- * Gets the next port in sequence from the specified `basePort`
- */
-var nextPort = (function () {
-  var port;
+var beacon = function (port, fn) {
+  var server = net.createServer(function () {});
 
-  var getNextPort = function (basePort) {
-    if (!port) {
-      port = basePort;
-      return port;
-    }
-
-    port++;
-    return port;
-  };
-
-  return getNextPort;
-})();
-
-/**
- * beacon()
- *
- * Responds with a unbound port on the current machine.
- */
-var beacon = function (basePort, callback) {
-  var server = net.createServer(function () {}),
-      port = nextPort(basePort);
-
-  function onListen () {
+  var onListen = function () {
     server.removeListener('error', onError);
     server.close();
-    callback(null, port)
-  }
+    fn(null, port)
+  };
   
-  function onError (err) {
+  var onError = function (err) {
     server.removeListener('listening', onListen);
 
     if (err.code !== 'EADDRINUSE' && err.code !== 'EACCES') {
-      return callback(err);
+      return fn(err);
     }
 
-    beacon(basePort, callback);
-  }
+    beacon(port + 1, fn);
+  };
 
   server.once('error', onError);
   server.once('listening', onListen);
