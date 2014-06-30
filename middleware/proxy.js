@@ -43,8 +43,12 @@ var cookieRewrite = function (cookie, fn) {
   return serialize(parsedCookie.name, parsedCookie.value, parsedCookie);
 };
 
-var proxyMiddleware = function (target, context) {
-  context = context || '';
+var proxyMiddleware = function (target, options) {
+  options = options || {};
+  context = options.context || '';
+
+  var log = options.log || console.log;
+
 
   /**
    * Allow target definitions with a path part
@@ -98,19 +102,17 @@ var proxyMiddleware = function (target, context) {
   
   proxy.on('error', function (err, req, res) {
     var msg = err.toString() + ': ' + proxyTarget + req.url;
+    log(msg);
+
     res.writeHead(500, { 'Content-Type': 'text/plain' });
     res.end(msg);
-    console.log('[proxy] ' + msg);
   });
   
   proxy.on('proxyRes', function (proxyRes, req, res) {
-
-    /* log request */
-
     var request = req.url.replace(path, ''),
         msg = request + ' -> ' + proxyTarget + req.url;
 
-    console.log('[proxy] ' + msg);
+    log(msg);
 
     /* replace Set-Cookie's Path attribute */
 
