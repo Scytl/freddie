@@ -14,7 +14,8 @@ var httpProxy = require('http-proxy'),
  * `require('cookie').parse`
  *
  * The RFC6265 specifies that the Set-Cookie header must contain just
- * one cookie pair (key=value) at the beginning followed by the cookie attributes
+ * one cookie pair (key=value) at the beginning followed by the cookie
+ * attributes
  */
 
 var cookieRewrite = function (cookie, fn) {
@@ -45,9 +46,9 @@ var cookieRewrite = function (cookie, fn) {
 
 var proxyMiddleware = function (target, options) {
   options = options || {};
-  context = options.context || '';
 
-  var log = options.log || console.log;
+  var context = options.context || '',
+      log = options.log || console.log;
 
 
   /**
