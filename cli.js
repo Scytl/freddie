@@ -2,6 +2,7 @@
 
 var minimist = require('minimist'),
     each     = require('./util/each'),
+    filter   = require('./util/filter'),
     mix      = require('./util/mix'),
     isArray  = require('./util/isArray'),
     readFile = require('./util/readFile'),
@@ -25,13 +26,8 @@ var configFile = argv.config || ('.' + pkg.name + 'rc'),
     config = argv.noconf ? null : readJSON(configFile);
 
 if (!config) {
-  console.log('loading defaults');
-  config = argv;
+  console.log('no configuration found: loading defaults');
 }
-
-if (!isArray(config)) {
-  config = [ config ];
-};
 
 var defaults = {
   root: process.cwd(),
@@ -39,6 +35,22 @@ var defaults = {
   name: 'server'
 };
 
-each(config, function (server) {
-  fess(mix(defaults, server));
+var servers = isArray(config) ? config : [ config ];
+
+if (argv._.length) {
+  servers = filter(servers, function (item) {
+    var index = argv._.indexOf(item.name),
+        match = index !== -1;
+
+    if (match) { argv._.splice(index, 1); }
+    return match;
+  });
+
+  each(argv._, function (item) {
+    console.log('no server found:', item);
+  });
+}
+
+each(servers, function (server) {
+  fess(mix(defaults, server, argv));
 });
