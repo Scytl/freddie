@@ -1,7 +1,33 @@
 fess
 ====
 
-Frontend static server
+Front end development server
+
+Launch the server from the document root of your project (where the `index.html`
+is placed)
+
+```sh
+cd /path/to/prj
+fess
+```
+
+>   server listening on port 3000
+
+Now you are able to browse your web project from your preferred browser:
+
+    http://localhost:3000
+
+By default, **fess** acts as a static server, serving the files placed in the
+directory from where it is launched
+
+It has, however, 3 main features built-in, covering the full development cycle:
+
+*   static server (for serving the assets)
+*   mock server (for prototyping when the back end is not released yet)
+*   proxy server (for redirecting requests to a back end)
+
+That way you can configure your project ready for production, moving the
+environment configuration out of the project
 
 Install
 -------
@@ -10,36 +36,8 @@ Install
 [sudo] npm install -g fess
 ```
 
-Usage
------
-
-Launch a static server
-
-1.  Go to the root directory of the site you want to serve (a directory with
-    an `index.html`)
-
-    ```sh
-    cd /path/to/my-prj
-    ```
-
-2.  From the command line, launch the CLI
-
-    ```sh
-    fess
-    ```
-
-Alternatively, you can launch the server from any directory passing a root
-path
-
-```sh
-fess --root /path/to/my-prj
-```
-
-The root directory can be passed as absolute path or relative to the current
-directory
-
-Config file
------------
+Configuration
+-------------
 
 **fess** looks inside the current directory (where the CLI is called from)
 searching for a `.fessrc` JSON config file.
