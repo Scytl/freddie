@@ -25,9 +25,9 @@ directory from where it is launched
 
 It has, however, 3 main features built-in, covering the full development cycle:
 
-*   static server (for serving the assets)
-*   mock server (for prototyping when the back end is not released yet)
-*   proxy server (for redirecting requests to a back end)
+*   static server: for serving the assets
+*   mock server: for prototyping when the back end is not released yet
+*   proxy server: for redirecting requests to a back end
 
 That way you can configure your project ready for production, moving the
 environment configuration out of the project

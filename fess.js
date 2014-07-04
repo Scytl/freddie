@@ -1,30 +1,47 @@
+'use strict';
+
 var http        = require('http'),
     connect     = require('connect'),
     serveStatic = require('serve-static'),
     each        = require('./util/each'),
+    mix         = require('./util/mix'),
     beacon      = require('./util/beacon'),
     proxy       = require('./middleware/proxy'),
     mock        = require('./middleware/mock');
 
-var fess = function (config) {
-  var app = connect();
+var logger = function (serverName, middlewareName) {
+  return console.log.bind(console, serverName, middlewareName + ':');
+};
+
+var defaults = {
+  root: process.cwd(),
+  port: 3000,
+  name: 'server',
+  onListen: function (serverName, port) {
+    console.log(serverName, 'listening on port', port);
+  }
+};
+
+var fess = function (options) {
+  var config = mix(defaults, options),
+      app = connect();
  
   // proxy the requests as defined in configuration
   if (config.proxy) {
-    var log = console.log.bind(console, config.name, 'proxy:');
     each(config.proxy, function (target, context) {
       app.use(context, proxy(target, {
         context: context,
-        log: log
+        log: logger(config.name, 'proxy')
       }));
     });
   }
  
   // if not intercepted by proxy, serve mock content
   if (config.mock) {
-    var log = console.log.bind(console, config.name, 'mock:');
     each(config.mock, function (root, context) {
-      app.use(context, mock(root, { log: log }));
+      app.use(context, mock(root, {
+        log: logger(config.name, 'mock')
+      }));
     });
   }
 

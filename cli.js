@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+'use strict';
 
 var minimist = require('minimist'),
     each     = require('./util/each'),
@@ -29,15 +30,6 @@ if (!config) {
   console.log('no configuration found: loading defaults');
 }
 
-var defaults = {
-  root: process.cwd(),
-  port: 3000,
-  name: 'server',
-  onListen: function (name, port) {
-    console.log(name, 'listening on port', port);
-  }
-};
-
 var servers = isArray(config) ? config : [ config ];
 
 if (argv._.length) {
@@ -55,5 +47,5 @@ if (argv._.length) {
 }
 
 each(servers, function (server) {
-  fess(mix(defaults, server, argv));
+  fess(mix(server, argv));
 });
