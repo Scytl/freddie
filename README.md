@@ -3,6 +3,9 @@ fess
 
 Front end development server
 
+Getting started
+---------------
+
 Launch the server from the document root of your project (where the `index.html`
 is placed)
 
@@ -13,7 +16,7 @@ fess
 
 >   server listening on port 3000
 
-Now you are able to browse your web project from your preferred browser:
+Now you can browse your web project with your preferred browser:
 
     http://localhost:3000
 

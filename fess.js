@@ -33,8 +33,9 @@ var fess = function (config) {
  
   beacon(config.port, function (err, port) {
     if (err) { throw err; }
-    http.createServer(app).listen(port);
-    console.log(config.name, 'listening on port', port);
+    http.createServer(app).listen(port, function () {
+      config.onListen(config.name, port);
+    });
   });
 };
 

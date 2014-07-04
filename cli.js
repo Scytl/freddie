@@ -32,7 +32,10 @@ if (!config) {
 var defaults = {
   root: process.cwd(),
   port: 3000,
-  name: 'server'
+  name: 'server',
+  onListen: function (name, port) {
+    console.log(name, 'listening on port', port);
+  }
 };
 
 var servers = isArray(config) ? config : [ config ];
