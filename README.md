@@ -57,7 +57,7 @@ API
 
 ### fess(config?)
 
-Launches a single fess server instance.
+Launches a single server instance.
 
 Optionally you can pass a config object to the `fess()` function to define
 custom settings, otherwise defaults will be applied
