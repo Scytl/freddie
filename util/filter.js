@@ -1,12 +1,7 @@
-var each = require('./each');
+'use strict';
 
-var isNumber = function (arg) {
-  return typeof arg === 'number';
-};
-
-var isArrayLike = function (arg) {
-  return arg && isNumber(arg.length);
-};
+var isArrayLike = require('./isArrayLike'),
+    each        = require('./each');
 
 var filter = function (list, fn) {
   var isArr = isArrayLike(list),

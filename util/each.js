@@ -1,14 +1,7 @@
-var isDefined = function (arg) {
-  return typeof arg !== 'undefined';
-};
+'use strict';
 
-var isNumber = function (arg) {
-  return typeof arg === 'number';
-};
-
-var isArrayLike = function (arg) {
-  return arg && isNumber(arg.length);
-};
+var isDefined   = require('./isDefined'),
+    isArrayLike = require('./isArrayLike');
 
 var iterateArray = function (arr, fn) {
   for (var index = 0, len = arr.length; index < len; index++) {
