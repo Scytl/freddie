@@ -25,22 +25,35 @@ directory from where it is launched
 
 It has, however, 3 main features built-in, covering the full development cycle:
 
-*   static server: for serving the assets
-*   mock server: for prototyping when the back end is not released yet
-*   proxy server: for redirecting requests to a back end
+*   **static server** for serving the assets
+*   **mock server** for prototyping when the back end is not released yet
+*   **proxy server** for redirecting requests to a back end
 
 That way you can configure your project ready for production, moving the
-environment configuration out of the project
+environment configuration out of the project source
 
 Install
 -------
+
+**fess** provides both a library to be used programatically and a CLI to be
+used from the command-line
+
+Install the CLI to be accessible from the command-line
 
 ```sh
 [sudo] npm install -g fess
 ```
 
-Configuration
--------------
+Or install the library from a project directory and save it as a development
+dependency
+
+```sh
+cd /path/to/prj
+npm install fess --save-dev
+```
+
+CLI configuration
+-----------------
 
 **fess** looks inside the current directory (where the CLI is called from)
 searching for a `.fessrc` JSON config file.
