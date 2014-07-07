@@ -171,7 +171,7 @@ common log
 [
   {
     "name": "dev",
-    "root": "build"
+    "root": "build",
     "port": 4000,
     "mock": {
       "/api": "mocks"
