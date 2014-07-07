@@ -1,16 +1,16 @@
 {
   "name": "fess",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Front end development server",
-  "homepage": "https://github.com/pfraces/fess.git",
+  "homepage": "https://github.com/Scytl/fess.git",
   "author": "Pau Fracés <pfraces@gmail.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/pfraces/fess.git"
+    "url": "https://github.com/Scytl/fess.git"
   },
   "bugs": {
-    "url": "https://github.com/pfraces/fess/issues"
+    "url": "https://github.com/Scytl/fess/issues"
   },
   "main": "fess.js",
   "bin": {
