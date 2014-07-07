@@ -30,7 +30,7 @@ It has, however, 3 main features built-in, covering the full development cycle:
 *   **proxy server** for redirecting requests to a back end
 
 That way you can configure your project ready for production, moving the
-environment configuration out of the project source
+environment configuration out of the project's source
 
 Install
 -------
@@ -51,6 +51,103 @@ dependency
 cd /path/to/prj
 npm install fess --save-dev
 ```
+
+API
+---
+
+### fess(config?)
+
+Launches a single fess server instance.
+
+Optionally you can pass a config object to the `fess()` function to define
+custom settings, otherwise defaults will be applied
+
+Here is an example using the same config as the default settings
+
+```js
+var fess = require('fess');
+
+fess({
+  name: 'server',
+  root: process.cwd(),
+  port: 3000
+});
+```
+
+Which is the same as calling `fess()` without any configuration object
+
+```js
+fess();
+```
+
+The defaults are merged with the config passed so you can configure just the
+name, for instance, and the default port and root will be applied
+
+```js
+fess({ name: 'custom' });
+```
+
+is equivalent to
+
+```js
+fess({
+  name: 'custom',
+  root: process.cwd(),
+  port: 3000
+});
+```
+
+#### Multiple servers
+
+You can launch multiple servers from the same script, each with its own
+configuration
+
+Simply call `fess()` several times passing the settings you want to each call
+
+### config
+
+The available config options are listed below
+
+#### config.name
+
+```js
+name: 'foo'
+```
+
+**(String)** Name of the server to be used in logs
+
+This is useful when launching several servers from the same script to
+recognize which logs are emitted from which server
+
+**(Defaults to)** `'server'`
+
+#### config.root
+
+```js
+root: '/path/to/document/root'
+```
+
+**(String)** Path where the static files are placed
+
+The server will only allow access to files inside this directory
+
+The `/path/to/document/root` can be absolute or relative to the current
+directory
+
+**(Defaults to)** `process.cwd()` _(the current directory)_
+
+#### config.port
+
+```js
+port: 3000
+```
+
+**(Number)** Port to listen for incoming requests
+
+**fess** looks for a free port to listen. If the specified port is busy, the
+port number is incremented and tried again until a free port is reached
+
+**(Defaults to)** `3000`
 
 CLI configuration
 -----------------
