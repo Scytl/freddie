@@ -9,16 +9,16 @@ Getting started
 Launch the server from the document root of your project (where the `index.html`
 is placed)
 
-```sh
-cd /path/to/prj
-fess
-```
+    $ cd /path/to/prj
+    $ fess
+
+>   no configuration found: loading defaults
 
 >   server listening on port 3000
 
 Now you can browse your web project with your preferred browser:
 
-    http://localhost:3000
+    $ xdg-open http://localhost:3000
 
 By default, **fess** acts as a static server, serving the files placed in the
 directory from where it is launched
@@ -35,21 +35,162 @@ environment configuration out of the project's source
 Install
 -------
 
-**fess** provides both a library to be used programatically and a CLI to be
-used from the command-line
+**fess** provides both a library to be used programatically and a command-line
+utility
 
-Install the CLI to be accessible from the command-line
+Install the CLI to be accessible from your shell
 
-```sh
-[sudo] npm install -g fess
-```
+    $ [sudo] npm install -g fess
 
 Or install the library from a project directory and save it as a development
 dependency
 
-```sh
-cd /path/to/prj
-npm install fess --save-dev
+    $ cd /path/to/prj
+    $ npm install fess --save-dev
+
+CLI
+---
+
+    $ fess [server, ...] [options]
+
+**fess** looks inside the current directory (where the CLI is called from)
+searching for a `.fessrc` JSON config file.
+
+If there is no config file, the default static server is launched
+
+### [server, ...]
+
+    $ fess dev doc
+
+>   dev listening on port 3000
+
+>   doc listening on port 3001
+
+List of named servers to run.
+
+The names must match the ones in the config file
+
+### [options]
+
+#### --help
+
+    $ fess --help
+
+Shows this document in the standard output
+
+#### --version
+
+    $ fess --version
+
+>   0.2.2
+
+Shows the version installed
+
+#### --config
+
+    $ fess --config /path/to/nondefault/config.json
+
+Use the specified file as server configuration instead of the default `.fessrc`
+
+#### --noconf
+
+    $ fess --noconf
+
+Ignore the `.fessrc` config file in the current directory
+
+Useful when used with the server-related options like `--root`
+
+### [server-related options]
+
+The following options will be passed through directly to the **fess** library
+
+For further information see the API documentation below
+
+**Priority over config file**
+
+The command-line options get priority over the config file options
+
+When in a path with a `.fessrc` config file, running `fess` with server-related
+options overrides the ones specified in the config file
+
+If the config file has multiple servers, the command-line options will override
+every server definition
+
+In this particular cases, its useful the `--noconf` flag
+
+#### --root
+
+    $ fess --root /path/to/document/root
+
+Path where the files you want to serve are stored
+
+The root is defined following this priority order:
+
+1.  CLI parameter
+2.  config's root property
+3.  current directory
+
+#### --port
+
+    $ fess --port 8080
+
+Port to listen for incoming requests
+
+You will need to use **sudo** to launch servers listening on **well known
+ports** _(those below 1024)_
+
+### .fessrc
+
+**Single server configuration**
+
+To configure a single server you can declare server-related options directly
+as a JSON object
+
+```json
+{
+  "root": "public",
+  "port": 8080
+}
+```
+
+The object will be passed through directly to the **fess** library
+
+For a list of the options that can be used see the API documentation below
+
+_(note that because of functions cannot be used in JSON, some options from
+the API are just accessible through JavaScript)_
+
+**Multiple server configuration**
+
+To configure multiple servers simply use an array of single configurations
+
+Its recommended to use the `name` option to recognize the servers in the
+common log
+
+```json
+[
+  {
+    "name": "dev",
+    "root": "build"
+    "port": 4000,
+    "mock": {
+      "/api": "mocks"
+    }
+  },
+  {
+    "name": "pre",
+    "root": "bin",
+    "port": 8080,
+    "proxy": {
+      "/api": "http://backend:4567/app"
+    }
+  },
+  {
+    "name": "doc",
+    "root": "doc",
+    "port": 5000
+  }
+]
 ```
 
 API
@@ -97,31 +238,18 @@ fess({
 });
 ```
 
-#### Multiple servers
+**Multiple servers**
 
 You can launch multiple servers from the same script, each with its own
 configuration
 
 Simply call `fess()` several times passing the settings you want to each call
 
-### config
+#### config
 
 The available config options are listed below
 
-#### config.name
-
-```js
-name: 'foo'
-```
-
-**(String)** Name of the server to be used in logs
-
-This is useful when launching several servers from the same script to
-recognize which logs are emitted from which server
-
-**(Defaults to)** `'server'`
-
-#### config.root
+##### config.root
 
 ```js
 root: '/path/to/document/root'
@@ -131,12 +259,13 @@ root: '/path/to/document/root'
 
 The server will only allow access to files inside this directory
 
-The `/path/to/document/root` can be absolute or relative to the current
-directory
+Usually this is the directory where `index.html` is placed
+
+The path can be absolute or relative to the current directory
 
 **(Defaults to)** `process.cwd()` _(the current directory)_
 
-#### config.port
+##### config.port
 
 ```js
 port: 3000
@@ -149,75 +278,81 @@ port number is incremented and tried again until a free port is reached
 
 **(Defaults to)** `3000`
 
-CLI configuration
------------------
+##### config.name
 
-**fess** looks inside the current directory (where the CLI is called from)
-searching for a `.fessrc` JSON config file.
+```js
+name: 'foo'
+```
 
-If there is no config file, the default static server is launched
+**(String)** Name of the server to be used in logs
 
-### root
+This is useful when launching several servers from the same script to
+recognize which logs are emitted from which server
 
-```json
-{
-    "root": "build"
+**(Defaults to)** `'server'`
+
+##### config.mock
+
+```js
+mock: {
+  '/api': '/path/to/mocks'
 }
 ```
 
-The root is defined following this priority order:
+**({ context: path })** A map of request contexts to paths with mocked JSON
+data
 
-1.  CLI parameter
-2.  config's root property
-3.  current directory
+*   Having a JSON file with mock data stored in `/path/to/mocks/endpoint.json`
+*   Having a mock configuration like in the sample above
+    (`'/api': '/path/to/mocks'`)
+*   All requests to `/api/endpoint` would be replied with the contents of the
+    `endpoint.json` file
 
-So, if a config file is defined and a CLI param is passed, the CLI param gets
-priority over the config defined root
+The path can be absolute or relative to the current directory
 
-### proxy
+Multiple mappings can be defined here
 
-A proxy table can be defined as follows:
+**(Defatults to)** `undefined`
 
-```json
-{
-    "proxy": {
-        "/api": "http://backend.com"
-    }
+##### config.proxy
+
+```js
+proxy: {
+  '/api': 'http://backend:8080/prj'
 }
 ```
 
-This config causes all requests to `/api/...` to be redirected to
-`http://backend.com/api/...`
+**({ context: url })** A map of request contexts to backend urls
 
-A context can be specified in the target server:
+*   Having a backend for the project hosted at `http://backend` listening
+    to port `8080`
+*   Having a proxy configuration like in the sample above
+    (`'/api': 'http://backend:8080/prj'`)
+*   All requests to `/api/endpoint` would be redirected to
+    `http://backend:8080/prj/api/endpoint`
+*   Support both `HTTP` and `HTTPS` protocols
 
-```json
-{
-    "proxy": {
-        "/api": "https://securebackend.com/foo"
-    }
+Multiple mappings can be defined here
+
+**(Defatults to)** `undefined`
+
+##### config.onListen
+
+```js
+onListen: function (serverName, port) {
+  console.log(serverName, 'listening on port', port);
 }
 ```
 
-redirecting all `/api/...` requests to `https://securebackend.com/foo/api/...`
+**(function (serverName, port))** Called once the server starts listening
 
-Multiple proxies can be defined by adding multiple rules to the `proxy`
-property.
+This is used by the [grunt-fess][1] plugin to release the async task
 
-### port
-
-```json
-{
-    "port": 3000
-}
-```
-
-**fess** looks for a free port to listen. If the specified port is busy, the
-port number is incremented and tried again until a free port is reached.
-
-If no port is specified, the port search starts with the default `3000`
+**(Defaults to)** `console.log` _(like in the sample above)_
 
 License
 -------
 
 The MIT License (MIT)
+
+[1]: https://github.com/Scytl/grunt-fess
