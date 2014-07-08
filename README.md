@@ -48,6 +48,8 @@ dependency
     $ cd /path/to/prj
     $ npm install fess --save-dev
 
+**NOTE:** For [grunt][1] users there is also a [grunt-fess][2] plugin available
+
 CLI
 ---
 
@@ -342,7 +344,7 @@ Multiple mappings can be defined here
 
 **(Defatults to)** `undefined`
 
-**NOTE:** JSON mocks are rendered using [dummy-json][2] which allows you to
+**NOTE:** JSON mocks are rendered using [dummy-json][3] which allows you to
 generate random data from a handlebars extended JSON file
 
 **URL params**
@@ -407,7 +409,7 @@ onListen: function (serverName, port) {
 
 **(function (serverName, port))** Called once the server starts listening
 
-This is used by the [grunt-fess][1] plugin to release the async task
+This is used by the [grunt-fess][2] plugin to release the async task
 
 **(Defaults to)** `console.log` _(like in the sample above)_
 
@@ -416,5 +418,6 @@ License
 
 The MIT License (MIT)
 
-[1]: https://github.com/Scytl/grunt-fess
-[2]: https://github.com/webroo/dummy-json
+[1]: https://github.com/gruntjs/grunt
+[2]: https://github.com/Scytl/grunt-fess
+[3]: https://github.com/webroo/dummy-json
