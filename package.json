@@ -1,6 +1,6 @@
 {
   "name": "fess",
-  "version": "0.2.4",
+  "version": "0.3.0",
   "description": "Front end development server",
   "homepage": "https://github.com/Scytl/fess.git",
   "author": "Pau Fracés <pfraces@gmail.com>",
