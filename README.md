@@ -245,6 +245,34 @@ configuration
 
 Simply call `fess()` several times passing the settings you want to each call
 
+**Available middlewares**
+
+There are 3 available middlewares built-in, which handles the requests with
+the following priority order:
+
+1.   proxy middleware
+2.   mock middleware
+3.   static middleware
+
+If there is a proxy configuration defined and a request context matches one of
+the contexts specified, the request is handled by the proxy middleware without
+reaching any other middleware
+
+If there is a mock configuration defined and a request context matches one of
+the contexts specified (and the request has not been handled by the proxy
+middleware), the request is handled by the mock middleware without reaching
+any other middleware
+
+If the request has not been handled by the previous middlewares it is handled
+by the static middleware by default
+
+If the static middleware cannot handle the request, an error HTTP response is
+returned
+
+**NOTE:** Even if you have defined mock and proxy configurations for the
+same server just one of them (or none) will handle the request following
+the priority order below
+
 #### config
 
 The available config options are listed below
@@ -314,6 +342,39 @@ Multiple mappings can be defined here
 
 **(Defatults to)** `undefined`
 
+**NOTE:** JSON mocks are rendered using [dummy-json][2] which allows you to
+generate random data from a handlebars extended JSON file
+
+**URL params**
+
+Currently there is no support for defining URLs with params
+
+    /api/item/:id/data
+
+If you need to mock requests like that you will need to create directories
+representing the variable part (`:id`)
+
+    /path/to/mocks/item/10/data.json
+    /path/to/mocks/item/20/data.json
+
+Then use the defined ids (`10`, `20`, ...) in your mocked data so the requests
+can be matched against the mocked directory structure
+
+**/path/to/mocks/items.json**
+
+```json
+[
+  {
+    "id": 10,
+    "name": "foo"
+  },
+  {
+    "id": 20,
+    "name": "bar"
+  }
+]
+```
+
 ##### config.proxy
 
 ```js
@@ -356,3 +417,4 @@ License
 The MIT License (MIT)
 
 [1]: https://github.com/Scytl/grunt-fess
+[2]: https://github.com/webroo/dummy-json
