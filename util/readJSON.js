@@ -1,3 +1,5 @@
+'use strict';
+
 var readFile      = require('./readFile'),
     stripComments = require('strip-json-comments');
 

@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 'use strict';
 
-var minimist = require('minimist'),
-    each     = require('./util/each'),
-    filter   = require('./util/filter'),
-    mix      = require('./util/mix'),
-    isArray  = require('./util/isArray'),
-    readFile = require('./util/readFile'),
-    readJSON = require('./util/readJSON'),
-    fess     = require('./fess');
+var minimist    = require('minimist'),
+    each        = require('./util/each'),
+    filter      = require('./util/filter'),
+    mix         = require('./util/mix'),
+    isArrayLike = require('./util/isArrayLike'),
+    readFile    = require('./util/readFile'),
+    readJSON    = require('./util/readJSON'),
+    fess        = require('./fess');
 
 var pkg = readJSON(__dirname, 'package.json'),
     argv = minimist(process.argv.slice(2));
@@ -30,7 +30,7 @@ if (!config) {
   console.log('no configuration found: loading defaults');
 }
 
-var servers = isArray(config) ? config : [ config ];
+var servers = isArrayLike(config) ? config : [ config ];
 
 if (argv._.length) {
   servers = filter(servers, function (item) {
