@@ -273,7 +273,7 @@ returned
 
 **NOTE:** Even if you have defined mock and proxy configurations for the
 same server just one of them (or none) will handle the request following
-the priority order below
+the priority order
 
 #### config
 
