@@ -11,38 +11,20 @@ var minimist    = require('minimist'),
     fess        = require('./fess');
 
 var pkg = readJSON(__dirname, 'package.json'),
-    argv = minimist(process.argv.slice(2));
+    argv = minimist(process.argv.slice(2)),
+    log = console.log;
 
-if (argv.version) {
-  console.log(pkg.version);
-  process.exit();
-}
-
-if (argv.help) {
-  console.log(readFile(__dirname, 'README.md'));
-  process.exit();
-}
+if (argv.version) { return log(pkg.version); }
+if (argv.help) { return log(readFile(__dirname, 'README.md')); }
 
 var configFile = argv.config || ('.' + pkg.name + 'rc'),
     config = argv.noconf ? null : readJSON(configFile);
-
-if (!config) {
-  console.log('no configuration found: loading defaults');
-}
 
 var servers = isArrayLike(config) ? config : [ config ];
 
 if (argv._.length) {
   servers = filter(servers, function (item) {
-    var index = argv._.indexOf(item.name),
-        match = index !== -1;
-
-    if (match) { argv._.splice(index, 1); }
-    return match;
-  });
-
-  each(argv._, function (item) {
-    console.log('no server found:', item);
+    return item && argv._.indexOf(item.name) >= 0;
   });
 }
 

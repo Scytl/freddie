@@ -12,13 +12,12 @@ is placed)
     $ cd /path/to/prj
     $ fess
 
->   no configuration found: loading defaults
-
 >   server listening on port 3000
 
-Now you can browse your web project with your preferred browser:
+Browse your web project at `http://localhost:3000`
 
-    $ xdg-open http://localhost:3000
+Features
+--------
 
 By default, **fess** acts as a static server, serving the files placed in the
 directory from where it is launched
@@ -29,26 +28,12 @@ It has, however, 3 main features built-in, covering the full development cycle:
 *   **mock server** for prototyping when the back end is not released yet
 *   **proxy server** for redirecting requests to a back end
 
-That way you can configure your project ready for production, moving the
-environment configuration out of the project's source
-
 Install
 -------
 
-**fess** provides both a library to be used programatically and a command-line
-utility
-
-Install the CLI to be accessible from your shell
-
     $ [sudo] npm install -g fess
 
-Or install the library from a project directory and save it as a development
-dependency
-
-    $ cd /path/to/prj
-    $ npm install fess --save-dev
-
-**NOTE:** For [grunt][1] users there is also a [grunt-fess][2] plugin available
+For [grunt][1] users there is a [grunt-fess][2] plugin available
 
 CLI
 ---
@@ -68,9 +53,9 @@ If there is no config file, the default static server is launched
 
 >   doc listening on port 3001
 
-List of named servers to run.
+List of named servers to launch.
 
-The names must match the ones in the config file
+Only names matching the ones in config file will be launched
 
 ### [options]
 
@@ -78,15 +63,13 @@ The names must match the ones in the config file
 
     $ fess --help
 
-Shows this document in the standard output
+Show documentation
 
 #### --version
 
     $ fess --version
 
->   0.2.2
-
-Shows the version installed
+Show version
 
 #### --config
 
@@ -344,7 +327,7 @@ Multiple mappings can be defined here
 
 **(Defatults to)** `undefined`
 
-**NOTE:** JSON mocks are rendered using [dummy-json][3] which allows you to
+**NOTE:** JSON mocks are rendered using [dummy-json][3] which allows to
 generate random data from a handlebars extended JSON file
 
 **URL params**

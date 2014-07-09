@@ -1,12 +1,17 @@
 'use strict';
 
-var readFile      = require('./readFile'),
+var path          = require('path'),
+    readFile      = require('./readFile'),
     stripComments = require('strip-json-comments');
 
 var readJSON = function () {
-  var content = readFile.apply(null, arguments);
+  var file = path.resolve.apply(null, arguments),
+      content = readFile(file);
+
   if (!content) { return; }
-  return JSON.parse(stripComments(content));
+
+  try { return JSON.parse(stripComments(content)); }
+  catch (e) { return console.error('error parsing JSON:', file); }
 };
 
 module.exports = readJSON;
