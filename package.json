@@ -1,6 +1,6 @@
 {
   "name": "freddie",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Front end development server",
   "homepage": "https://github.com/Scytl/freddie.git",
   "author": "Pau Fracés <pfraces@gmail.com>",
@@ -12,9 +12,9 @@
   "bugs": {
     "url": "https://github.com/Scytl/freddie/issues"
   },
-  "main": "freddie.js",
+  "main": "src/freddie.js",
   "bin": {
-    "freddie": "./cli.js"
+    "freddie": "src/cli.js"
   },
   "dependencies": {
     "connect": "latest",

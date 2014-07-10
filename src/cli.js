@@ -2,20 +2,20 @@
 'use strict';
 
 var minimist    = require('minimist'),
-    each        = require('./util/each'),
-    filter      = require('./util/filter'),
-    mix         = require('./util/mix'),
-    isArrayLike = require('./util/isArrayLike'),
-    readFile    = require('./util/readFile'),
-    readJSON    = require('./util/readJSON'),
+    each        = require('./utils/each'),
+    filter      = require('./utils/filter'),
+    mix         = require('./utils/mix'),
+    isArrayLike = require('./utils/isArrayLike'),
+    readFile    = require('./utils/readFile'),
+    readJSON    = require('./utils/readJSON'),
     freddie     = require('./freddie');
 
-var pkg = readJSON(__dirname, 'package.json'),
+var pkg = readJSON(__dirname, '..', 'package.json'),
     argv = minimist(process.argv.slice(2)),
     log = console.log;
 
 if (argv.version) { return log(pkg.version); }
-if (argv.help) { return log(readFile(__dirname, 'README.md')); }
+if (argv.help) { return log(readFile(__dirname, '..', 'README.md')); }
 
 var configFile = argv.config || ('.' + pkg.name + 'rc'),
     config = argv.noconf ? null : readJSON(configFile);
