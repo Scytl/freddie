@@ -22,7 +22,7 @@ var defaults = {
   }
 };
 
-var fess = function (options) {
+var freddie = function (options) {
   var config = mix(defaults, options),
       app = connect();
  
@@ -56,4 +56,4 @@ var fess = function (options) {
   });
 };
 
-module.exports = fess;
+module.exports = freddie;

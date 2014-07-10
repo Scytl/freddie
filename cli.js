@@ -8,7 +8,7 @@ var minimist    = require('minimist'),
     isArrayLike = require('./util/isArrayLike'),
     readFile    = require('./util/readFile'),
     readJSON    = require('./util/readJSON'),
-    fess        = require('./fess');
+    freddie     = require('./freddie');
 
 var pkg = readJSON(__dirname, 'package.json'),
     argv = minimist(process.argv.slice(2)),
@@ -29,5 +29,5 @@ if (argv._.length) {
 }
 
 each(servers, function (server) {
-  fess(mix(server, argv));
+  freddie(mix(server, argv));
 });

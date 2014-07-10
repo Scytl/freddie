@@ -1,5 +1,7 @@
-fess
-====
+[!freddie](freddie-mercury.jpg)
+
+freddie
+=======
 
 Front end development server
 
@@ -10,7 +12,7 @@ Launch the server from the document root of your project (where the `index.html`
 is placed)
 
     $ cd /path/to/prj
-    $ fess
+    $ freddie
 
 >   server listening on port 3000
 
@@ -19,8 +21,8 @@ Check your project at `http://localhost:3000`
 Features
 --------
 
-By default, **fess** acts as a static server, serving the files placed in the
-directory from where it is launched
+By default, **freddie** acts as a static server, serving the files placed in
+the directory from where it is launched
 
 It has, however, 3 main features built-in, covering the full development cycle:
 
@@ -31,23 +33,23 @@ It has, however, 3 main features built-in, covering the full development cycle:
 Install
 -------
 
-    $ [sudo] npm install -g fess
+    $ [sudo] npm install -g freddie
 
-For [grunt][1] users there is a [grunt-fess][2] plugin available
+For [grunt][1] users there is a [grunt-freddie][2] plugin available
 
-CLI
----
+Usage
+-----
 
-    $ fess [server, ...] [options]
+    $ freddie [server, ...] [options]
 
-**fess** looks inside the current directory (where the CLI is called from)
-searching for a `.fessrc` JSON config file.
+**freddie** looks inside the current directory looking for a `.freddie.json` 
+config file.
 
 If there is no config file, the default static server is launched
 
 ### [server, ...]
 
-    $ fess dev doc
+    $ freddie dev doc
 
 >   dev listening on port 3000
 
@@ -61,33 +63,35 @@ Only names matching the ones in config file will be launched
 
 #### --help
 
-    $ fess --help
+    $ freddie --help
 
 Show documentation
 
 #### --version
 
-    $ fess --version
+    $ freddie --version
 
 Show version
 
 #### --config
 
-    $ fess --config /path/to/nondefault/config.json
+    $ freddie --config /path/to/nondefault/config.json
 
-Use the specified file as server configuration instead of the default `.fessrc`
+Use the specified file as server configuration instead of the default
+`.freddie.json`
 
 #### --noconf
 
-    $ fess --noconf
+    $ freddie --noconf
 
-Ignore the `.fessrc` config file in the current directory
+Ignore the `.freddie.json` config file in the current directory
 
 Useful when used with the server-related options like `--root`
 
 ### [server-related options]
 
-The following options will be passed through directly to the **fess** library
+The following options will be passed through directly to the **freddie**
+library
 
 For further information see the API documentation below
 
@@ -95,7 +99,7 @@ For further information see the API documentation below
 
 The command-line options get priority over the config file options
 
-When in a path with a `.fessrc` config file, running `fess` with server-related
+In a path with a `.freddie.json` file, running `freddie` with server-related
 options overrides the ones specified in the config file
 
 If the config file has multiple servers, the command-line options will override
@@ -105,7 +109,7 @@ In this particular cases, its useful the `--noconf` flag
 
 #### --root
 
-    $ fess --root /path/to/document/root
+    $ freddie --root /path/to/document/root
 
 Path where the files you want to serve are stored
 
@@ -117,14 +121,14 @@ The root is defined following this priority order:
 
 #### --port
 
-    $ fess --port 8080
+    $ freddie --port 8080
 
 Port to listen for incoming requests
 
 You will need to use **sudo** to launch servers listening on **well known
 ports** _(those below 1024)_
 
-### .fessrc
+### .freddie.json
 
 **Single server configuration**
 
@@ -138,7 +142,7 @@ as a JSON object
 }
 ```
 
-The object will be passed through directly to the **fess** library
+The object will be passed through directly to the **freddie** library
 
 For a list of the options that can be used see the API documentation below
 
@@ -181,26 +185,26 @@ common log
 API
 ---
 
-### fess(config?)
+### freddie(config?)
 
 Launches a single server instance.
 
-Optionally you can pass a config object to the `fess()` function to define
+Optionally you can pass a config object to the `freddie()` function to define
 custom settings, otherwise defaults will be applied
 
 Here is an example using the same config as the default settings
 
 ```js
-var fess = require('fess');
+var freddie = require('freddie');
 
-fess({
+freddie({
   name: 'server',
   root: process.cwd(),
   port: 3000
 });
 ```
 
-Which is the same as calling `fess()` without any configuration object
+Which is the same as calling `freddie()` without any configuration object
 
 The defaults are merged with the config passed so you can configure just the
 name, for instance, and the default port and root will be applied
@@ -208,9 +212,8 @@ name, for instance, and the default port and root will be applied
 **Multiple servers**
 
 You can launch multiple servers from the same script, each with its own
-configuration
-
-Simply call `fess()` several times passing the settings you want on each call
+configuration, by calling `freddie()` several times passing the settings you
+want on each call
 
 **Available middlewares**
 
@@ -264,7 +267,7 @@ port: 3000
 
 **(Number)** Port to listen for incoming requests
 
-**fess** looks for a free port to listen. If the specified port is busy, the
+**freddie** looks for a free port to listen. If the specified port is busy, the
 port number is incremented and tried again until a free port is reached
 
 **(Defaults to)** `3000`
@@ -370,7 +373,7 @@ onListen: function (serverName, port) {
 
 **(function (serverName, port))** Called once the server starts listening
 
-This is used by the [grunt-fess][2] plugin to release the async task
+This is used by the [grunt-freddie][2] plugin to release the async task
 
 **(Defaults to)** `console.log` _(like in the sample above)_
 
@@ -380,5 +383,5 @@ License
 The MIT License (MIT)
 
 [1]: https://github.com/gruntjs/grunt
-[2]: https://github.com/Scytl/grunt-fess
+[2]: https://github.com/Scytl/grunt-freddie
 [3]: https://github.com/webroo/dummy-json
