@@ -1,5 +1,5 @@
-freddie ![freddie](freddie-mercury.jpg)
-=======================================
+freddie ![freddie](freddie.png)
+===============================
 
 Front end development server
 
