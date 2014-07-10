@@ -3,9 +3,9 @@
 var http        = require('http'),
     connect     = require('connect'),
     serveStatic = require('serve-static'),
-    each        = require('./util/each'),
-    mix         = require('./util/mix'),
-    beacon      = require('./util/beacon'),
+    each        = require('./utils/each'),
+    mix         = require('./utils/mix'),
+    beacon      = require('./utils/beacon'),
     proxy       = require('./middleware/proxy'),
     mock        = require('./middleware/mock');
 
@@ -22,7 +22,7 @@ var defaults = {
   }
 };
 
-var fess = function (options) {
+var freddie = function (options) {
   var config = mix(defaults, options),
       app = connect();
  
@@ -56,4 +56,4 @@ var fess = function (options) {
   });
 };
 
-module.exports = fess;
+module.exports = freddie;

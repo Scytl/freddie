@@ -1,20 +1,20 @@
 {
-  "name": "fess",
-  "version": "0.3.0",
+  "name": "freddie",
+  "version": "0.3.3",
   "description": "Front end development server",
-  "homepage": "https://github.com/Scytl/fess.git",
+  "homepage": "https://github.com/Scytl/freddie.git",
   "author": "Pau Fracés <pfraces@gmail.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Scytl/fess.git"
+    "url": "https://github.com/Scytl/freddie.git"
   },
   "bugs": {
-    "url": "https://github.com/Scytl/fess/issues"
+    "url": "https://github.com/Scytl/freddie/issues"
   },
-  "main": "fess.js",
+  "main": "src/freddie.js",
   "bin": {
-    "fess": "./cli.js"
+    "freddie": "src/cli.js"
   },
   "dependencies": {
     "connect": "latest",
