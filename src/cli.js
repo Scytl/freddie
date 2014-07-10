@@ -17,7 +17,7 @@ var pkg = readJSON(__dirname, '..', 'package.json'),
 if (argv.version) { return log(pkg.version); }
 if (argv.help) { return log(readFile(__dirname, '..', 'README.md')); }
 
-var configFile = argv.config || ('.' + pkg.name + 'rc'),
+var configFile = argv.config || ('.' + pkg.name + '.json'),
     config = argv.noconf ? null : readJSON(configFile);
 
 var servers = isArrayLike(config) ? config : [ config ];
