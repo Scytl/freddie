@@ -14,7 +14,7 @@ is placed)
 
 >   server listening on port 3000
 
-Browse your web project at `http://localhost:3000`
+Check your project at `http://localhost:3000`
 
 Features
 --------
@@ -24,7 +24,7 @@ directory from where it is launched
 
 It has, however, 3 main features built-in, covering the full development cycle:
 
-*   **static server** for serving the assets
+*   **static server** for static demos
 *   **mock server** for prototyping when the back end is not released yet
 *   **proxy server** for redirecting requests to a back end
 
@@ -142,7 +142,7 @@ The object will be passed through directly to the **fess** library
 
 For a list of the options that can be used see the API documentation below
 
-_(note that because of functions cannot be used in JSON, some options from
+_(note that because functions cannot be used in JSON, some options from
 the API are just accessible through JavaScript)_
 
 **Multiple server configuration**
@@ -202,33 +202,15 @@ fess({
 
 Which is the same as calling `fess()` without any configuration object
 
-```js
-fess();
-```
-
 The defaults are merged with the config passed so you can configure just the
 name, for instance, and the default port and root will be applied
-
-```js
-fess({ name: 'custom' });
-```
-
-is equivalent to
-
-```js
-fess({
-  name: 'custom',
-  root: process.cwd(),
-  port: 3000
-});
-```
 
 **Multiple servers**
 
 You can launch multiple servers from the same script, each with its own
 configuration
 
-Simply call `fess()` several times passing the settings you want to each call
+Simply call `fess()` several times passing the settings you want on each call
 
 **Available middlewares**
 
@@ -258,11 +240,7 @@ returned
 same server just one of them (or none) will handle the request following
 the priority order
 
-#### config
-
-The available config options are listed below
-
-##### config.root
+#### config.root
 
 ```js
 root: '/path/to/document/root'
@@ -278,7 +256,7 @@ The path can be absolute or relative to the current directory
 
 **(Defaults to)** `process.cwd()` _(the current directory)_
 
-##### config.port
+#### config.port
 
 ```js
 port: 3000
@@ -291,7 +269,7 @@ port number is incremented and tried again until a free port is reached
 
 **(Defaults to)** `3000`
 
-##### config.name
+#### config.name
 
 ```js
 name: 'foo'
@@ -304,7 +282,7 @@ recognize which logs are emitted from which server
 
 **(Defaults to)** `'server'`
 
-##### config.mock
+#### config.mock
 
 ```js
 mock: {
@@ -360,7 +338,7 @@ can be matched against the mocked directory structure
 ]
 ```
 
-##### config.proxy
+#### config.proxy
 
 ```js
 proxy: {
@@ -382,7 +360,7 @@ Multiple mappings can be defined here
 
 **(Defatults to)** `undefined`
 
-##### config.onListen
+#### config.onListen
 
 ```js
 onListen: function (serverName, port) {
