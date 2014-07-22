@@ -30,16 +30,32 @@ var cookieRewrite = function (cookie, fn) {
       value = pair[name],
       attrs = parse(tokens.join('; '));
 
-  var parsedCookie = fn({
+  var attrsMap = {
     name: name,
-    value: value,
-    maxage: attrs['Max-Age'],
-    expires: attrs['Expires'],
-    path: attrs['Path'],
-    domain: attrs['Domain'],
-    secure: attrs['Secure'],
-    httpOnly: attrs['HttpOnly']
-  });
+    value: value
+  };
+
+  /**
+   * Add cookie defined attributes only
+   * ----------------------------------
+   *
+   * This is only required with `Expires` attribute to avoid passing
+   * undefined to `new Date()` causing a `Expires` value of the current date
+   *
+   * `new Date()` is required because `cookie.serialize expects from `expires`
+   * to be a date
+   *
+   * For consistency, the approach is extended to all the attributes
+   */
+
+  if (attrs['Max-Age']) { attrsMap.maxage = attrs['Max-Age']; }
+  if (attrs['Expires']) { attrsMap.expires = new Date(attrs['Expires']); }
+  if (attrs['Path']) { attrsMap.path = attrs['Path']; }
+  if (attrs['Domain']) { attrsMap.domain = attrs['Domain']; }
+  if (attrs['Secure']) { attrsMap.secure = attrs['Secure']; }
+  if (attrs['HttpOnly']) { attrsMap.httpOnly = attrs['HttpOnly']; }
+
+  var parsedCookie = fn(attrsMap);
 
   return serialize(parsedCookie.name, parsedCookie.value, parsedCookie);
 };
@@ -92,12 +108,20 @@ var proxyMiddleware = function (target, options) {
    * Proxy to HTTPS without using certs
    * ----------------------------------
    *
-   * Use `secure: false` to access HTTPS targets without cert
+   * Use `secure: false` in the proxy configuration to access HTTPS targets
+   * without cert
+   *
+   * Rewrite request Host header by using the proxy target
+   * -----------------------------------------------------
+   *
+   * Use `headers: { host: <new host> }` in proxy configuration to rewrite the
+   * Host header with the current proxy target
    */
 
   var proxy = httpProxy.createProxyServer({
     target: proxyTarget,
-    secure: false
+    secure: false,
+    headers: { host: targetParams.host }
   });
   
   
@@ -129,13 +153,7 @@ var proxyMiddleware = function (target, options) {
   });
   
   return function (req, res) {
-    // add context to the proxied requests
     req.url = proxyContext + req.url;
-
-    // rewrite host header with the proxy target
-    req.headers.host = targetParams.host;
-
-    // proxy the request
     proxy.web(req, res);
   };
 };
