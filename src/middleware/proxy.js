@@ -129,7 +129,13 @@ var proxyMiddleware = function (target, options) {
   });
   
   return function (req, res) {
+    // add context to the proxied requests
     req.url = proxyContext + req.url;
+
+    // rewrite host header with the proxy target
+    req.headers.host = targetParams.host;
+
+    // proxy the request
     proxy.web(req, res);
   };
 };
