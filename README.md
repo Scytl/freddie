@@ -25,7 +25,7 @@ the directory from where it is launched
 It has, however, 3 main features built-in, covering the full development cycle:
 
 *   **static server** for static demos
-*   **mock server** for prototyping when the back end is not released yet
+*   **fixtures server** for prototyping when the back end is not released yet
 *   **proxy server** for redirecting requests to a back end
 
 Install
@@ -160,8 +160,8 @@ common log
     "name": "dev",
     "root": "build",
     "port": 4000,
-    "mock": {
-      "/api": "mocks"
+    "fixtures": {
+      "/api": "test/fixtures"
     }
   },
   {
@@ -219,27 +219,23 @@ There are 3 available middlewares built-in, which handles the requests with
 the following priority order:
 
 1.   proxy middleware
-2.   mock middleware
+2.   fixtures middleware
 3.   static middleware
 
-If there is a proxy configuration defined and a request context matches one of
+If there is a `proxy` property defined and a request context matches one of
 the contexts specified, the request is handled by the proxy middleware without
 reaching any other middleware
 
-If there is a mock configuration defined and a request context matches one of
-the contexts specified (and the request has not been handled by the proxy
-middleware), the request is handled by the mock middleware without reaching
-any other middleware
+If there is a `fixtures` property defined and a request context matches one
+of the contexts specified (and the request has not been handled by the proxy
+middleware), the request is handled by the fixtures middleware without
+reaching any other middleware
 
 If the request has not been handled by the previous middlewares it is handled
 by the static middleware by default
 
 If the static middleware cannot handle the request, an error HTTP response is
 returned
-
-**NOTE:** Even if you have defined mock and proxy configurations for the
-same server just one of them (or none) will handle the request following
-the priority order
 
 #### config.root
 
@@ -283,31 +279,34 @@ recognize which logs are emitted from which server
 
 **(Defaults to)** `'server'`
 
-#### config.mock
+#### config.fixtures
 
 ```js
-mock: {
-  '/api': '/path/to/mocks'
+fixtures: {
+  '/api': '/path/to/fixtures'
 }
 ```
 
-**({ context: path })** A map of request contexts to paths with mocked JSON
-data
-
-*   Having a JSON file with mock data stored in `/path/to/mocks/endpoint.json`
-*   Having a mock configuration like in the sample above
-    (`'/api': '/path/to/mocks'`)
-*   All requests to `/api/endpoint` would be replied with the contents of the
-    `endpoint.json` file
+**({ context: path })** A map of request contexts to paths with JSON fixtures
 
 The path can be absolute or relative to the current directory
 
 Multiple mappings can be defined here
 
+This middleware reply to every request that matches the specified
+context regardless of the HTTP method used (`GET`, `POST`, ...)
+
+The request is modified adding a `.json` at the end
+
+*   Having a `/path/to/fixtures/endpoint.json` fixture
+*   Having a `fixtures: { '/api': '/path/to/fixtures' }` configuration
+*   All requests to `/api/endpoint` would be replied with the contents of
+    `endpoint.json`
+
 **(Defatults to)** `undefined`
 
-**NOTE:** JSON mocks are rendered using [dummy-json][3] which allows to
-generate random data from a handlebars extended JSON file
+**NOTE:** fixtures are rendered using [dummy-json][3] which allows to generate
+random data from a handlebars extended JSON file
 
 **URL params**
 
@@ -315,16 +314,14 @@ Currently there is no support for defining URLs with params
 
     /api/item/:id/data
 
-If you need to mock requests like that you will need to create directories
-representing the variable part (`:id`)
+For this kind of requests we have to use directories representing the variable
+part (`:id`)
 
-    /path/to/mocks/item/10/data.json
-    /path/to/mocks/item/20/data.json
+    /path/to/fixtures/item/10/data.json
+    /path/to/fixtures/item/20/data.json
 
-Then use the defined ids (`10`, `20`, ...) in your mocked data so the requests
-can be matched against the mocked directory structure
-
-**/path/to/mocks/items.json**
+Then use the defined ids (`10`, `20`, ...) in your fixtures so future requests
+can be matched against the fake directory structure
 
 ```json
 [

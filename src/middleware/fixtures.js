@@ -19,7 +19,7 @@ var HTTP = {
   ERR_UNKNOWN: 500
 };
 
-var mockMiddleware = function (root, options) {
+var fixturesMiddleware = function (root, options) {
   options = options || {};
 
   var log = options.log || console.log;
@@ -64,4 +64,4 @@ var mockMiddleware = function (root, options) {
   };
 };
 
-module.exports = mockMiddleware;
+module.exports = fixturesMiddleware;

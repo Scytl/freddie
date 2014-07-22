@@ -7,7 +7,7 @@ var http        = require('http'),
     mix         = require('./utils/mix'),
     beacon      = require('./utils/beacon'),
     proxy       = require('./middleware/proxy'),
-    mock        = require('./middleware/mock');
+    fixtures    = require('./middleware/fixtures');
 
 var logger = function (serverName, middlewareName) {
   return console.log.bind(console, serverName, middlewareName + ':');
@@ -36,16 +36,16 @@ var freddie = function (options) {
     });
   }
  
-  // if not intercepted by proxy, serve mock content
-  if (config.mock) {
-    each(config.mock, function (root, context) {
-      app.use(context, mock(root, {
-        log: logger(config.name, 'mock')
+  // if not intercepted by proxy, respond with fixtures
+  if (config.fixtures) {
+    each(config.fixtures, function (root, context) {
+      app.use(context, fixtures(root, {
+        log: logger(config.name, 'fixtures')
       }));
     });
   }
 
-  // if not intercepted by mock, serve static content
+  // if not intercepted, serve static content by default
   app.use(serveStatic(config.root));
  
   beacon(config.port, function (err, port) {

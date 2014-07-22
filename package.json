@@ -1,6 +1,6 @@
 {
   "name": "freddie",
-  "version": "0.3.3",
+  "version": "0.3.6",
   "description": "Front end development server",
   "homepage": "https://github.com/Scytl/freddie.git",
   "author": "Pau Fracés <pfraces@gmail.com>",
@@ -17,17 +17,17 @@
     "freddie": "src/cli.js"
   },
   "dependencies": {
-    "connect": "latest",
-    "serve-static": "latest",
-    "http-proxy": "latest",
-    "cookie": "latest",
-    "minimist": "latest",
-    "strip-json-comments": "latest",
-    "dummy-json": "latest"
+    "connect": "*",
+    "serve-static": "*",
+    "http-proxy": "*",
+    "cookie": "*",
+    "minimist": "*",
+    "strip-json-comments": "*",
+    "dummy-json": "*"
   },
   "keywords": [
     "static",
-    "mock",
+    "fixtures",
     "proxy",
     "server",
     "http",
