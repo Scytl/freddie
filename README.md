@@ -59,19 +59,19 @@ Only names matching the ones in config file will be launched
 
 ### [options]
 
-#### --help
+#### --help, -h
 
     $ freddie --help
 
 Show documentation
 
-#### --version
+#### --version, -v
 
     $ freddie --version
 
 Show version
 
-#### --config
+#### --config, -c
 
     $ freddie --config /path/to/nondefault/config.json
 
@@ -105,7 +105,7 @@ every server definition
 
 In this particular cases, its useful the `--noconf` flag
 
-#### --root
+#### --root, -r
 
     $ freddie --root /path/to/document/root
 
@@ -117,7 +117,7 @@ The root is defined following this priority order:
 2.  config's root property
 3.  current directory
 
-#### --port
+#### --port, -p
 
     $ freddie --port 8080
 
