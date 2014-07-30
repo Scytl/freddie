@@ -14,6 +14,12 @@ var pkg = readJSON(__dirname, '..', 'package.json'),
     argv = minimist(process.argv.slice(2)),
     log = console.log;
 
+if (argv.v) { argv.version = argv.v; }
+if (argv.h) { argv.help = argv.h; }
+if (argv.c) { argv.config = argv.c; }
+if (argv.r) { argv.root = argv.r; }
+if (argv.p) { argv.port = argv.p; }
+
 if (argv.version) { return log(pkg.version); }
 if (argv.help) { return log(readFile(__dirname, '..', 'README.md')); }
 
