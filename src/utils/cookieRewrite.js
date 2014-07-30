@@ -56,3 +56,5 @@ var cookieRewrite = function (cookie, fn) {
 
   return serialize(parsedCookie.name, parsedCookie.value, parsedCookie);
 };
+
+module.exports = cookieRewrite;
