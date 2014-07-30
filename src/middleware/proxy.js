@@ -1,64 +1,6 @@
-var httpProxy = require('http-proxy'),
-    url       = require('url');
-
-/**
- * cookieRewrite(cookie, fn)
- * -------------------------
- *
- * `require('cookie').serialize` needs the cookie key and value to be
- * specified in its params:
- *
- *     cookie.serialize(key, value, options)
- *
- * That means we can't pass directly the object returned by
- * `require('cookie').parse`
- *
- * The RFC6265 specifies that the Set-Cookie header must contain just
- * one cookie pair (key=value) at the beginning followed by the cookie
- * attributes
- */
-
-var cookieRewrite = function (cookie, fn) {
-  var cookieModule = require('cookie');
-
-  var parse = cookieModule.parse,
-      serialize = cookieModule.serialize;
-
-  var tokens = cookie.split(/; */),
-      pair = parse(tokens.shift()),
-      name = Object.keys(pair)[0],
-      value = pair[name],
-      attrs = parse(tokens.join('; '));
-
-  var attrsMap = {
-    name: name,
-    value: value
-  };
-
-  /**
-   * Add cookie defined attributes only
-   * ----------------------------------
-   *
-   * This is only required with `Expires` attribute to avoid passing
-   * undefined to `new Date()` causing a `Expires` value of the current date
-   *
-   * `new Date()` is required because `cookie.serialize expects from `expires`
-   * to be a date
-   *
-   * For consistency, the approach is extended to all the attributes
-   */
-
-  if (attrs['Max-Age']) { attrsMap.maxage = attrs['Max-Age']; }
-  if (attrs['Expires']) { attrsMap.expires = new Date(attrs['Expires']); }
-  if (attrs['Path']) { attrsMap.path = attrs['Path']; }
-  if (attrs['Domain']) { attrsMap.domain = attrs['Domain']; }
-  if (attrs['Secure']) { attrsMap.secure = attrs['Secure']; }
-  if (attrs['HttpOnly']) { attrsMap.httpOnly = attrs['HttpOnly']; }
-
-  var parsedCookie = fn(attrsMap);
-
-  return serialize(parsedCookie.name, parsedCookie.value, parsedCookie);
-};
+var httpProxy     = require('http-proxy'),
+    url           = require('url'),
+    cookieRewrite = require('../utils/cookieRewrite');
 
 var proxyMiddleware = function (target, options) {
   options = options || {};
@@ -146,7 +88,7 @@ var proxyMiddleware = function (target, options) {
 
     headers['set-cookie'] = headers['set-cookie'].map(function (cookie) {
       return cookieRewrite(cookie, function (cookie) {
-        cookie.path = cookie.path.replace(path, '');
+        if (cookie.path) { cookie.path = cookie.path.replace(path, ''); }
         return cookie;
       });
     });
