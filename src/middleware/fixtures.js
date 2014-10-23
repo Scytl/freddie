@@ -29,7 +29,8 @@ var fixturesMiddleware = function (root, options) {
         filePath = path.resolve(root, '.' + pathname + '.json');
 
     fs.readFile(filePath, { encoding: 'utf8' }, function (err, data) {
-      var content = '';
+      var jsonTpl = '',
+          content = '';
 
       if (err) {
         if (err.code === 'ENOENT') {
@@ -47,9 +48,18 @@ var fixturesMiddleware = function (root, options) {
         return;
       }
 
-      try { content = dummyJSON.parse(stripComments(data)); }
+      try { jsonTpl = stripComments(data); }
       catch (err) {
-        log('err unknown', err.toString());
+        log('strip-json-comments err:', err.toString());
+
+        res.writeHead(HTTP.ERR_UNKNOWN, CT.PLAIN_TEXT);
+        res.end(err.toString());
+        return;
+      }
+
+      try { content = dummyJSON.parse(jsonTpl); }
+      catch (err) {
+        log('dummy-json err:', err.toString());
 
         res.writeHead(HTTP.ERR_UNKNOWN, CT.PLAIN_TEXT);
         res.end(err.toString());
