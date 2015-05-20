@@ -1,6 +1,7 @@
 var httpProxy     = require('http-proxy'),
     url           = require('url'),
-    cookieRewrite = require('../utils/cookieRewrite');
+    cookieRewrite = require('../utils/cookieRewrite'),
+    fs = require('fs');
 
 var proxyMiddleware = function (target, options) {
   options = options || {};
@@ -24,19 +25,17 @@ var proxyMiddleware = function (target, options) {
    *     target: 'host:1234'
    *     context: '/path/part/context'
    */
-
-   var targetParams
+   var urlFormatted, isSecured = false;
    if (typeof target === 'object'){
-    targetParams = url.parse(target.url);
+      urlFormatted = url.parse(target.url);
+      isSecured = target.hasOwnProperty("cert");
    }else{
-      targetParams = url.parse(target);
+      urlFormatted = url.parse(target);
    }
 
-   console.log(targetParams);
-
   var proxyTarget = url.format({
-    protocol: targetParams.protocol,
-    host: targetParams.host
+    protocol: urlFormatted.protocol,
+    host: urlFormatted.host
   });
 
   /**
@@ -50,7 +49,7 @@ var proxyMiddleware = function (target, options) {
    * `/` is removed from path when no path is defined
    */
 
-  var path = targetParams.pathname === '/' ? '' : targetParams.pathname,
+  var path = urlFormatted.pathname === '/' ? '' : urlFormatted.pathname,
       proxyContext = path + context;
 
   /**
@@ -67,11 +66,27 @@ var proxyMiddleware = function (target, options) {
    * Host header with the current proxy target
    */
 
-  var proxy = httpProxy.createProxyServer({
+   var objConf = {
     target: proxyTarget,
     secure: false,
-    headers: { host: targetParams.host }
-  });
+    headers: { host: urlFormatted.host }
+  }
+  if (isSecured){
+      objConf.ssl = {
+        key: fs.readFileSync(target.key, 'utf8'),
+        cert: fs.readFileSync(target.cert, 'utf8')
+      }
+
+      /*
+      objConf.pfx = fs.readFileSync(target.key, 'utf8');
+      objConf.passphrase = "nashville";   
+      */
+
+  }
+  console.log(objConf);
+  var proxy = httpProxy.createProxyServer(objConf);
+
+ 
   
   
   proxy.on('error', function (err, req, res) {
