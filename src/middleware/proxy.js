@@ -25,7 +25,14 @@ var proxyMiddleware = function (target, options) {
    *     context: '/path/part/context'
    */
 
-  var targetParams = url.parse(target);
+   var targetParams
+   if (typeof target === 'object'){
+    targetParams = url.parse(target.url);
+   }else{
+      targetParams = url.parse(target);
+   }
+
+   console.log(targetParams);
 
   var proxyTarget = url.format({
     protocol: targetParams.protocol,
