@@ -57,13 +57,14 @@ var fixturesMiddleware = function (root, options) {
         return;
       }
 
-      var response = JSON.parse(jsonContent);
+      log(req.url, '->', filePath);
+
+      var response = JSON.parse(jsonContent || '{}');
       response = response.body ? response : { body: response }
       response.status = response.status || HTTP.ERR_NONE;
       response.headers = response.headers || {};
       response.headers['Content-Type'] = 'application/json';
 
-      log(req.url, '->', filePath);
       res.writeHead(response.status, response.headers);
       res.end(JSON.stringify(response.body));
     });
