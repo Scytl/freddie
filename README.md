@@ -327,11 +327,11 @@ By default, freddie will treat the json contents as response data
 }
 ```
 
-But you can wrap the previous response in a `response` attribute:
+But you can wrap the previous response in a `body` attribute:
 
 ```json
 {
-  "response": {
+  "body": {
     "foo": 123
   }
 }
@@ -345,7 +345,7 @@ Doing so you can specify response metadata such as status code or headers
   "headers": {
     "Access-Control-Allow-Origin": "*"
   },
-  "response": {
+  "body": {
     "foo": 123
   }
 }
