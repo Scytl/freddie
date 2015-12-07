@@ -4,15 +4,6 @@ var fs            = require('fs'),
     dummyJSON     = require('dummy-json'),
     stripComments = require('strip-json-comments');
 
-var ct = function (type) {
-  return { 'Content-Type': type };
-};
-
-var CT = {
-  PLAIN_TEXT: ct('text/plain'),
-  JSON: ct('application/json')
-};
-
 var HTTP = {
   ERR_NONE: 200,
   ERR_NOT_FOUND: 404,
@@ -36,14 +27,14 @@ var fixturesMiddleware = function (root, options) {
         if (err.code === 'ENOENT') {
             log('err not found', filePath);
 
-            res.writeHead(HTTP.ERR_NOT_FOUND, CT.PLAIN_TEXT);
+            res.writeHead(HTTP.ERR_NOT_FOUND, { 'Content-Type': 'text/plain' });
             res.end();
             return;
         }
 
         log('err unknown', err.toString());
 
-        res.writeHead(HTTP.ERR_UNKNOWN, CT.PLAIN_TEXT);
+        res.writeHead(HTTP.ERR_UNKNOWN, { 'Content-Type': 'text/plain' });
         res.end(err.toString());
         return;
       }
@@ -52,7 +43,7 @@ var fixturesMiddleware = function (root, options) {
       catch (err) {
         log('strip-json-comments err:', err.toString());
 
-        res.writeHead(HTTP.ERR_UNKNOWN, CT.PLAIN_TEXT);
+        res.writeHead(HTTP.ERR_UNKNOWN, { 'Content-Type': 'text/plain' });
         res.end(err.toString());
         return;
       }
@@ -61,15 +52,19 @@ var fixturesMiddleware = function (root, options) {
       catch (err) {
         log('dummy-json err:', err.toString());
 
-        res.writeHead(HTTP.ERR_UNKNOWN, CT.PLAIN_TEXT);
+        res.writeHead(HTTP.ERR_UNKNOWN, { 'Content-Type': 'text/plain' });
         res.end(err.toString());
         return;
       }
-      
-      log(req.url, '->', filePath);
 
-      res.writeHead(HTTP.ERR_NONE, CT.JSON);
-      res.end(content);
+      content = content.response ? content : { response: content }
+      content.status = content.status || HTTP.ERR_NONE;
+      content.headers = content.headers || {};
+      content.headers['Content-Type'] = 'application/json';
+
+      log(req.url, '->', filePath);
+      res.writeHead(content.status, content.headers);
+      res.end(content.response);
     });
   };
 };

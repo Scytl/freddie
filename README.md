@@ -305,8 +305,51 @@ The request is modified adding a `.json` at the end
 
 **(Defatults to)** `undefined`
 
-**NOTE:** fixtures are rendered using [dummy-json][3] which allows to generate
+**Comments**
+
+Fixtures are parsed with [json-strip-comments][3] which allows to add c-like
+comments in the json
+
+**Random content**
+
+Fixtures are rendered using [dummy-json][4] which allows to generate
 random data from a handlebars extended JSON file
+
+**Custom headers**
+
+HTTP status code and headers can be specified in the json contents
+
+By default, freddie will treat the json contents as response data
+
+```json
+{
+  "foo": 123
+}
+```
+
+But you can wrap the previous response in a `response` attribute:
+
+```json
+{
+  "response": {
+    "foo": 123
+  }
+}
+```
+
+Doing so you can specify response metadata such as status code or headers
+
+```json
+{
+  "status": 204,
+  "headers": {
+    "Access-Control-Allow-Origin": "*"
+  },
+  "response": {
+    "foo": 123
+  }
+}
+```
 
 **URL params**
 
@@ -379,4 +422,5 @@ The MIT License (MIT)
 
 [1]: https://github.com/gruntjs/grunt
 [2]: https://github.com/Scytl/grunt-freddie
-[3]: https://github.com/webroo/dummy-json
+[3]: https://github.com/sindresorhus/strip-json-comments
+[4]: https://github.com/webroo/dummy-json
