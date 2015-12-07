@@ -1,8 +1,8 @@
-var fs            = require('fs'),
-    path          = require('path'),
-    url           = require('url'),
-    dummyJSON     = require('dummy-json'),
-    stripComments = require('strip-json-comments');
+var fs            = require('fs');
+var path          = require('path');
+var url           = require('url');
+var dummyJSON     = require('dummy-json');
+var stripComments = require('strip-json-comments');
 
 var HTTP = {
   ERR_NONE: 200,
@@ -16,12 +16,12 @@ var fixturesMiddleware = function (root, options) {
   var log = options.log || console.log;
 
   return function (req, res) {
-    var pathname = url.parse(req.url).pathname,
-        filePath = path.resolve(root, '.' + pathname + '.json');
+    var pathname = url.parse(req.url).pathname;
+    var filePath = path.resolve(root, '.' + pathname + '.json');
 
     fs.readFile(filePath, { encoding: 'utf8' }, function (err, data) {
-      var jsonTpl = '',
-          content = '';
+      var jsonTpl = '';
+      var jsonContent = '';
 
       if (err) {
         if (err.code === 'ENOENT') {
@@ -48,7 +48,7 @@ var fixturesMiddleware = function (root, options) {
         return;
       }
 
-      try { content = dummyJSON.parse(jsonTpl); }
+      try { jsonContent = dummyJSON.parse(jsonTpl); }
       catch (err) {
         log('dummy-json err:', err.toString());
 
@@ -57,14 +57,15 @@ var fixturesMiddleware = function (root, options) {
         return;
       }
 
-      content = content.response ? content : { response: content }
-      content.status = content.status || HTTP.ERR_NONE;
-      content.headers = content.headers || {};
-      content.headers['Content-Type'] = 'application/json';
+      var response = JSON.parse(jsonContent);
+      response = response.body ? response : { body: response }
+      response.status = response.status || HTTP.ERR_NONE;
+      response.headers = response.headers || {};
+      response.headers['Content-Type'] = 'application/json';
 
       log(req.url, '->', filePath);
-      res.writeHead(content.status, content.headers);
-      res.end(content.response);
+      res.writeHead(response.status, response.headers);
+      res.end(JSON.stringify(response.body));
     });
   };
 };
