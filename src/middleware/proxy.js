@@ -95,7 +95,7 @@ var proxyMiddleware = function (target, options) {
   });
   
   return function (req, res) {
-    req.url = proxyContext + req.url;
+    req.url = proxyContext + (req.url === '/' ? '' : req.url);
     proxy.web(req, res);
   };
 };
