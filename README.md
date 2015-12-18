@@ -315,9 +315,7 @@ comments in the json
 Fixtures are rendered using [dummy-json][4] which allows to generate
 random data from a handlebars extended JSON file
 
-**Custom headers**
-
-HTTP status code and headers can be specified in the json contents
+**Resonse configuration**
 
 By default, freddie will treat the json contents as response data
 
@@ -337,7 +335,7 @@ But you can wrap the previous response in a `body` attribute:
 }
 ```
 
-Doing so you can specify response metadata such as status code or headers
+By doing so you can specify response metadata such as status code or headers
 
 ```json
 {
@@ -350,6 +348,13 @@ Doing so you can specify response metadata such as status code or headers
   }
 }
 ```
+
+The following properties can be specified
+
+  * `status`: HTTP response status code. Defaults to `200`
+  * `headers`: HTTP response headers. Defaults to `{ 'Content-Type': 'application/json' }`
+  * `latency`: Delay in milisecons before sending the response. Defaults to `0`
+
 
 **URL params**
 

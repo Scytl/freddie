@@ -61,12 +61,21 @@ var fixturesMiddleware = function (root, options) {
 
       var response = JSON.parse(jsonContent || '{}');
       response = response.body ? response : { body: response }
+
+      // custom status: defaults to 200
       response.status = response.status || HTTP.ERR_NONE;
+
+      // custom headers: defaults to { 'Content-Type': 'application/json' }
       response.headers = response.headers || {};
       response.headers['Content-Type'] = 'application/json';
 
-      res.writeHead(response.status, response.headers);
-      res.end(JSON.stringify(response.body));
+      // custom latency: defaults to 0ms
+      var response.latency = response.latency || 0;
+
+      setTimeout(function () {
+        res.writeHead(response.status, response.headers);
+        res.end(JSON.stringify(response.body));
+      }, response.latency);
     });
   };
 };
