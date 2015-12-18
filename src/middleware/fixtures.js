@@ -70,7 +70,7 @@ var fixturesMiddleware = function (root, options) {
       response.headers['Content-Type'] = 'application/json';
 
       // custom latency: defaults to 0ms
-      var response.latency = response.latency || 0;
+      response.latency = response.latency || 0;
 
       setTimeout(function () {
         res.writeHead(response.status, response.headers);
