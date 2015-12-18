@@ -67,7 +67,10 @@ var fixturesMiddleware = function (root, options) {
 
       // custom headers: defaults to { 'Content-Type': 'application/json' }
       response.headers = response.headers || {};
-      response.headers['Content-Type'] = 'application/json';
+
+      if (!response.headers['Content-Type']) {
+        response.headers['Content-Type'] = 'application/json';
+      }
 
       // custom latency: defaults to 0ms
       response.latency = response.latency || 0;
