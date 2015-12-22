@@ -215,27 +215,18 @@ want on each call
 
 **Available middlewares**
 
-There are 3 available middlewares built-in, which handles the requests with
+There are 4 available middlewares built-in, which handles the requests with
 the following priority order:
 
-1.   proxy middleware
-2.   fixtures middleware
-3.   static middleware
+ 1. proxy middleware
+ 2. fixtures middleware
+ 3. static middleware
+ 4. notfound middleware
 
-If there is a `proxy` property defined and a request context matches one of
-the contexts specified, the request is handled by the proxy middleware without
-reaching any other middleware
-
-If there is a `fixtures` property defined and a request context matches one
-of the contexts specified (and the request has not been handled by the proxy
-middleware), the request is handled by the fixtures middleware without
-reaching any other middleware
-
-If the request has not been handled by the previous middlewares it is handled
-by the static middleware by default
-
-If the static middleware cannot handle the request, an error HTTP response is
-returned
+The request handling is exclusive. If the 1st middleware (the proxy middleware)
+can handle the request the other ones are not called at all. If the middleware
+cannot handle the request, it is passed to the next middleware (the fixtures
+middleware) and so on...
 
 #### config.root
 
@@ -403,6 +394,37 @@ proxy: {
 *   Support both `HTTP` and `HTTPS` protocols
 
 Multiple mappings can be defined here
+
+**(Defatults to)** `undefined`
+
+#### config.notfound
+
+`notfound` middleware settings
+
+It can be used to define a custom `404` error page
+
+```js
+notfound: {
+  path: 'file.html',
+  status: 404
+}
+```
+
+`status` defaults to `404`
+
+```js
+notfound: { path: 'file.html' }
+```
+
+It can also be useful while serving angular applications with `html5mode` enabled
+
+```js
+root: 'build',
+notfound: {
+  path: 'build/index.html',
+  status: 200
+}
+```
 
 **(Defatults to)** `undefined`
 
