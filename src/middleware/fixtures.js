@@ -10,6 +10,10 @@ var HTTP = {
   ERR_UNKNOWN: 500
 };
 
+var isDefined = function (arg) {
+  return typeof arg !== 'undefined';
+};
+
 var fixturesMiddleware = function (root, options) {
   options = options || {};
 
@@ -60,7 +64,7 @@ var fixturesMiddleware = function (root, options) {
       log(req.url, '->', filePath);
 
       var response = JSON.parse(jsonContent || '{}');
-      response = response.body ? response : { body: response }
+      response = isDefined(response.body) ? response : { body: response }
 
       // custom status: defaults to 200
       response.status = response.status || HTTP.ERR_NONE;
