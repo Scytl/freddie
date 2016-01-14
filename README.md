@@ -330,7 +330,6 @@ By doing so you can specify response metadata such as status code or headers
 
 ```json
 {
-  "status": 204,
   "headers": {
     "Access-Control-Allow-Origin": "*"
   },
