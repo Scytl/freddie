@@ -46,8 +46,6 @@ var cookieRewrite = require('../utils/cookieRewrite');
 
 module.exports = function (target, options) {
   options = options || {};
-
-  var context = options.context || '';
   var log = options.log || console.log;
 
   var targetParams = url.parse(target);
@@ -58,7 +56,7 @@ module.exports = function (target, options) {
   });
 
   var path = targetParams.pathname === '/' ? '' : targetParams.pathname;
-  var proxyContext = path + context;
+  var proxyContext = path + (options.context || '');
 
   var proxy = httpProxy.createProxyServer({
     target: proxyTarget,
@@ -75,10 +73,7 @@ module.exports = function (target, options) {
   });
 
   proxy.on('proxyRes', function (proxyRes, req, res) {
-    var request = req.url.replace(path, '');
-    var msg = request + ' -> ' + proxyTarget + req.url;
-
-    log(msg);
+    log(req.url.replace(path, '') + ' -> ' + proxyTarget + req.url);
 
     var headers = proxyRes.headers;
     if (!headers['set-cookie']) { return; }
@@ -92,7 +87,11 @@ module.exports = function (target, options) {
   });
 
   return function (req, res) {
-    req.url = proxyContext + (req.url === '/' ? '' : req.url);
+    var path = req.url
+      .replace(/^[/][?]/, '?')
+      .replace(/^[/]$/, '');
+
+    req.url = proxyContext + path;
     proxy.web(req, res);
   };
 };
