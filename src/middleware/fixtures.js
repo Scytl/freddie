@@ -1,7 +1,7 @@
-var fs            = require('fs');
-var path          = require('path');
-var url           = require('url');
-var dummyJSON     = require('dummy-json');
+var fs = require('fs');
+var path = require('path');
+var url = require('url');
+var dummyJSON = require('dummy-json');
 var stripComments = require('strip-json-comments');
 
 var HTTP = {
@@ -14,7 +14,7 @@ var isDefined = function (arg) {
   return typeof arg !== 'undefined';
 };
 
-var fixturesMiddleware = function (root, options) {
+module.exports = function (root, options) {
   options = options || {};
 
   var log = options.log || console.log;
@@ -66,18 +66,13 @@ var fixturesMiddleware = function (root, options) {
       var response = JSON.parse(jsonContent || '{}');
       response = isDefined(response.body) ? response : { body: response }
 
-      // custom status: defaults to 200
       response.status = response.status || HTTP.ERR_NONE;
-
-      // custom headers: defaults to { 'Content-Type': 'application/json' }
       response.headers = response.headers || {};
+      response.latency = response.latency || 0;
 
       if (!response.headers['Content-Type']) {
         response.headers['Content-Type'] = 'application/json';
       }
-
-      // custom latency: defaults to 0ms
-      response.latency = response.latency || 0;
 
       setTimeout(function () {
         res.writeHead(response.status, response.headers);
@@ -86,5 +81,3 @@ var fixturesMiddleware = function (root, options) {
     });
   };
 };
-
-module.exports = fixturesMiddleware;

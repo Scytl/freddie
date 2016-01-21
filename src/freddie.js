@@ -1,20 +1,33 @@
+/**
+ * freddie
+ * =======
+ *
+ * Priority of request interceptors
+ * --------------------------------
+ * 
+ *  1. proxy
+ *  2. fixtures
+ *  3. static
+ *  4. notfound
+ */
+
 'use strict';
 
-var http        = require('http'),
-    connect     = require('connect'),
-    serveStatic = require('serve-static'),
-    each        = require('./utils/each'),
-    mix         = require('./utils/mix'),
-    beacon      = require('./utils/beacon'),
-    proxy       = require('./middleware/proxy'),
-    fixtures    = require('./middleware/fixtures'),
-    notfound    = require('./middleware/notfound');
+var http = require('http');
+var connect = require('connect');
+var serveStatic = require('serve-static');
+var each = require('./utils/each');
+var mix = require('./utils/mix');
+var beacon = require('./utils/beacon');
+var proxy = require('./middleware/proxy');
+var fixtures = require('./middleware/fixtures');
+var notfound = require('./middleware/notfound');
 
 var logger = function (serverName, middlewareName) {
   return console.log.bind(console, serverName, middlewareName + ':');
 };
 
-var defaults = {
+var DEFAULTS = {
   root: process.cwd(),
   port: 3000,
   name: 'server',
@@ -23,19 +36,9 @@ var defaults = {
   }
 };
 
-
-/**
- * priority of request interceptors:
- * 
- *  1. proxy
- *  2. fixtures
- *  3. static
- *  4. notfound
- */
-
-var freddie = function (options) {
-  var config = mix(defaults, options),
-      app = connect();
+module.exports = function (options) {
+  var config = mix(DEFAULTS, options);
+  var app = connect();
  
   if (config.proxy) {
     each(config.proxy, function (target, context) {
@@ -67,5 +70,3 @@ var freddie = function (options) {
     });
   });
 };
-
-module.exports = freddie;
