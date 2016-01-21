@@ -2,29 +2,6 @@
  * proxy
  * =====
  *
- * Allow target definitions with a path part
- * -----------------------------------------
- *
- * Having a target with a path part `host:1234/path/part`
- * and a context `/context`
- *
- *     { '/context': 'host:1234/path/part' }
- *
- * The `/path/part` must be removed from the target and added to the
- * context as a prefix:
- *
- *     target: 'host:1234'
- *     context: '/path/part/context'
- *
- * Avoid '//' in the context of any requests
- * -----------------------------------------
- *
- * `url.parse` returns `/` as path when no path is defined
- * and the context defined in config must start with `/`
- *
- * To avoid `//context` by concatenating path and context,
- * `/` is removed from path when no path is defined
- *
  * Proxy to HTTPS without using certs
  * ----------------------------------
  *
@@ -45,27 +22,27 @@ var url = require('url');
 var cookieRewrite = require('../utils/cookieRewrite');
 
 module.exports = function (target, options) {
+  target = url.parse(target);
   options = options || {};
+
   var log = options.log || console.log;
 
-  var targetParams = url.parse(target);
-
-  var proxyTarget = url.format({
-    protocol: targetParams.protocol,
-    host: targetParams.host
+  var host = url.format({
+    protocol: target.protocol,
+    host: target.host
   });
 
-  var path = targetParams.pathname === '/' ? '' : targetParams.pathname;
-  var proxyContext = path + (options.context || '');
+  var path = target.pathname || '';
+  if (path === '/') { path = ''; }
 
   var proxy = httpProxy.createProxyServer({
-    target: proxyTarget,
+    target: host,
     secure: false,
-    headers: { host: targetParams.host }
+    headers: { host: target.host }
   });
 
   proxy.on('error', function (err, req, res) {
-    var msg = err.toString() + ': ' + proxyTarget + req.url;
+    var msg = err.toString() + ': ' + host + req.url;
     log(msg);
 
     res.writeHead(500, { 'Content-Type': 'text/plain' });
@@ -73,7 +50,7 @@ module.exports = function (target, options) {
   });
 
   proxy.on('proxyRes', function (proxyRes, req, res) {
-    log(req.url.replace(path, '') + ' -> ' + proxyTarget + req.url);
+    log(req.url.replace(path, '') + ' -> ' + host + req.url);
 
     var headers = proxyRes.headers;
     if (!headers['set-cookie']) { return; }
@@ -87,11 +64,7 @@ module.exports = function (target, options) {
   });
 
   return function (req, res) {
-    var path = req.url
-      .replace(/^[/][?]/, '?')
-      .replace(/^[/]$/, '');
-
-    req.url = proxyContext + path;
+    req.url = path + req.url.replace(/^[/][?]/, '?').replace(/^[/]$/, '');
     proxy.web(req, res);
   };
 };

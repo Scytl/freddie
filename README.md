@@ -40,7 +40,7 @@ Usage
 
     $ freddie [server, ...] [options]
 
-**freddie** looks inside the current directory looking for a `.freddie.json` 
+**freddie** looks inside the current directory looking for a `.freddie.json`
 config file.
 
 If there is no config file, the default static server is launched
@@ -382,17 +382,13 @@ proxy: {
 }
 ```
 
-**({ context: url })** A map of request contexts to backend urls
-
-*   Having a backend for the project hosted at `http://backend` listening
-    to port `8080`
-*   Having a proxy configuration like in the sample above
-    (`'/api': 'http://backend:8080/prj'`)
-*   All requests to `/api/endpoint` would be redirected to
-    `http://backend:8080/prj/api/endpoint`
-*   Support both `HTTP` and `HTTPS` protocols
-
 Multiple mappings can be defined here
+
+All requests to `/api/endpoint` would be redirected to
+`http://backend:8080/prj/endpoint`
+
+**({ context: url })** A map of request contexts to backend urls
+*   Support both `HTTP` and `HTTPS` protocols
 
 **(Defatults to)** `undefined`
 

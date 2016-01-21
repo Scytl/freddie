@@ -4,7 +4,7 @@
  *
  * Priority of request interceptors
  * --------------------------------
- * 
+ *
  *  1. proxy
  *  2. fixtures
  *  3. static
@@ -39,16 +39,15 @@ var DEFAULTS = {
 module.exports = function (options) {
   var config = mix(DEFAULTS, options);
   var app = connect();
- 
+
   if (config.proxy) {
     each(config.proxy, function (target, context) {
       app.use(context, proxy(target, {
-        context: context,
         log: logger(config.name, 'proxy')
       }));
     });
   }
- 
+
   if (config.fixtures) {
     each(config.fixtures, function (root, context) {
       app.use(context, fixtures(root, {
@@ -62,7 +61,7 @@ module.exports = function (options) {
   if (config.notfound) {
     app.use(notfound(config.notfound));
   }
- 
+
   beacon(config.port, function (err, port) {
     if (err) { throw err; }
     http.createServer(app).listen(port, function () {
