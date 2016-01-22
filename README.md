@@ -40,7 +40,7 @@ Usage
 
     $ freddie [server, ...] [options]
 
-**freddie** looks inside the current directory looking for a `.freddie.json` 
+**freddie** looks inside the current directory looking for a `.freddie.json`
 config file.
 
 If there is no config file, the default static server is launched
@@ -215,27 +215,18 @@ want on each call
 
 **Available middlewares**
 
-There are 3 available middlewares built-in, which handles the requests with
+There are 4 available middlewares built-in, which handles the requests with
 the following priority order:
 
-1.   proxy middleware
-2.   fixtures middleware
-3.   static middleware
+ 1. proxy middleware
+ 2. fixtures middleware
+ 3. static middleware
+ 4. notfound middleware
 
-If there is a `proxy` property defined and a request context matches one of
-the contexts specified, the request is handled by the proxy middleware without
-reaching any other middleware
-
-If there is a `fixtures` property defined and a request context matches one
-of the contexts specified (and the request has not been handled by the proxy
-middleware), the request is handled by the fixtures middleware without
-reaching any other middleware
-
-If the request has not been handled by the previous middlewares it is handled
-by the static middleware by default
-
-If the static middleware cannot handle the request, an error HTTP response is
-returned
+The request handling is exclusive. If the 1st middleware (the proxy middleware)
+can handle the request the other ones are not called at all. If the middleware
+cannot handle the request, it is passed to the next middleware (the fixtures
+middleware) and so on...
 
 #### config.root
 
@@ -305,8 +296,55 @@ The request is modified adding a `.json` at the end
 
 **(Defatults to)** `undefined`
 
-**NOTE:** fixtures are rendered using [dummy-json][3] which allows to generate
+**Comments**
+
+Fixtures are parsed with [json-strip-comments][3] which allows to add c-like
+comments in the json
+
+**Random content**
+
+Fixtures are rendered using [dummy-json][4] which allows to generate
 random data from a handlebars extended JSON file
+
+**Resonse configuration**
+
+By default, freddie will treat the json contents as response data
+
+```json
+{
+  "foo": 123
+}
+```
+
+But you can wrap the previous response in a `body` attribute:
+
+```json
+{
+  "body": {
+    "foo": 123
+  }
+}
+```
+
+By doing so you can specify response metadata such as status code or headers
+
+```json
+{
+  "headers": {
+    "Access-Control-Allow-Origin": "*"
+  },
+  "body": {
+    "foo": 123
+  }
+}
+```
+
+The following properties can be specified
+
+  * `status`: HTTP response status code. Defaults to `200`
+  * `headers`: HTTP response headers. Defaults to `{ 'Content-Type': 'application/json' }`
+  * `latency`: Delay in milisecons before sending the response. Defaults to `0`
+
 
 **URL params**
 
@@ -344,17 +382,44 @@ proxy: {
 }
 ```
 
-**({ context: url })** A map of request contexts to backend urls
+Multiple mappings can be defined here
 
-*   Having a backend for the project hosted at `http://backend` listening
-    to port `8080`
-*   Having a proxy configuration like in the sample above
-    (`'/api': 'http://backend:8080/prj'`)
-*   All requests to `/api/endpoint` would be redirected to
-    `http://backend:8080/prj/api/endpoint`
+All requests to `/api/endpoint` would be redirected to
+`http://backend:8080/prj/endpoint`
+
+**({ context: url })** A map of request contexts to backend urls
 *   Support both `HTTP` and `HTTPS` protocols
 
-Multiple mappings can be defined here
+**(Defatults to)** `undefined`
+
+#### config.notfound
+
+`notfound` middleware settings
+
+It can be used to define a custom `404` error page
+
+```js
+notfound: {
+  path: 'file.html',
+  status: 404
+}
+```
+
+`status` defaults to `404`
+
+```js
+notfound: { path: 'file.html' }
+```
+
+It can also be useful while serving angular applications with `html5mode` enabled
+
+```js
+root: 'build',
+notfound: {
+  path: 'build/index.html',
+  status: 200
+}
+```
 
 **(Defatults to)** `undefined`
 
@@ -379,4 +444,5 @@ The MIT License (MIT)
 
 [1]: https://github.com/gruntjs/grunt
 [2]: https://github.com/Scytl/grunt-freddie
-[3]: https://github.com/webroo/dummy-json
+[3]: https://github.com/sindresorhus/strip-json-comments
+[4]: https://github.com/webroo/dummy-json
