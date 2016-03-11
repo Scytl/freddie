@@ -22,9 +22,10 @@ var beacon = require('./utils/beacon');
 var proxy = require('./middleware/proxy');
 var fixtures = require('./middleware/fixtures');
 var notfound = require('./middleware/notfound');
+var log = require('./utils/log');
 
 var logger = function (serverName, middlewareName) {
-  return console.log.bind(console, serverName, middlewareName + ':');
+  return log.bind(log, serverName, middlewareName + ':');
 };
 
 var DEFAULTS = {
