@@ -23,7 +23,9 @@
     "cookie": "*",
     "minimist": "*",
     "strip-json-comments": "*",
-    "dummy-json": "*"
+    "dummy-json": "*",
+    "moment": "*",
+    "chalk": "*"
   },
   "keywords": [
     "static",
