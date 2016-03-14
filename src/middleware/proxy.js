@@ -25,7 +25,7 @@ module.exports = function (target, options) {
   target = url.parse(target);
   options = options || {};
 
-  var logger = options.log || console.log;
+  var log = options.log || console.log;
 
   var host = url.format({
     protocol: target.protocol,
@@ -43,19 +43,14 @@ module.exports = function (target, options) {
 
   proxy.on('error', function (err, req, res) {
     var msg = err.toString() + ': ' + host + req.url;
-    logger(msg);
+    log(msg);
 
     res.writeHead(500, { 'Content-Type': 'text/plain' });
     res.end(msg);
   });
 
   proxy.on('proxyRes', function (proxyRes, req, res) {
-    var from = req.url;
-    if (req.url !== path) {
-      from = req.url.replace(path, '');
-    }
-
-    logger(req.method, from, host + req.url, proxyRes.statusCode);
+    log(req.method, req.url.replace(path, ''), host + req.url, proxyRes.statusCode);
 
     var headers = proxyRes.headers;
     if (!headers['set-cookie']) { return; }
