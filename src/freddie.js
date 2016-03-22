@@ -25,7 +25,7 @@ var notfound = require('./middleware/notfound');
 var log = require('./utils/log');
 
 var logger = function (serverName, middlewareName) {
-  return log.bind(log, serverName, middlewareName + ':');
+  return log.bind(null, serverName, middlewareName + ':');
 };
 
 var DEFAULTS = {
